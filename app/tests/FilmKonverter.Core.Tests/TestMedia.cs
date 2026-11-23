@@ -84,4 +84,4 @@ public sealed class TestMedia : IAsyncLifetime
 }
 
 [CollectionDefinition("media")]
-public sealed class MediaCollection : ICollectionFixture<TestMedia>;
+public sealed class MediaCollection : ICollectionFixture<TestMedia>, ICollectionFixture<DuplicateMedia>;

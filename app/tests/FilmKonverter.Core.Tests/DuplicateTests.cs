@@ -66,10 +66,7 @@ public sealed class DuplicateMedia : IAsyncLifetime
     }
 }
 
-[CollectionDefinition("duplicates")]
-public sealed class DuplicateCollection : ICollectionFixture<DuplicateMedia>;
-
-[Collection("duplicates")]
+[Collection("media")]
 public sealed class DuplicateTests(DuplicateMedia m)
 {
     private sealed class Library(Profile p, string input, string output)
@@ -120,8 +117,26 @@ public sealed class DuplicateTests(DuplicateMedia m)
 
     private Task<LibraryAnalysis> Analyse(Library lib) => LibraryAnalyzer.AnalyzeAsync(lib.P, m.Tools, new ProbeCache(), null, CancellationToken.None);
 
-    private Task<List<DuplicateDecision>> Plan(Library lib, LibraryAnalysis a) =>
-        DuplicateCleaner.PlanAsync(a.Duplicates, m.Tools, CancellationToken.None, lib.In, lib.Out);
+    private async Task<List<DuplicateDecision>> Plan(Library lib, LibraryAnalysis a)
+    {
+        var plan = await DuplicateCleaner.PlanAsync(a.Duplicates, m.Tools, CancellationToken.None, lib.In, lib.Out);
+        for (var attempt = 1; attempt < 3 && plan.Any(BrieflyUnreadable); attempt++)
+        {
+            await Task.Delay(1500 * attempt);
+            plan = await DuplicateCleaner.PlanAsync(a.Duplicates, m.Tools, CancellationToken.None, lib.In, lib.Out);
+        }
+        return plan;
+    }
+
+    private bool BrieflyUnreadable(DuplicateDecision d)
+    {
+        if (d.Reason is null || !d.Reason.Contains(L.T("nicht lesbar", "not readable"), StringComparison.OrdinalIgnoreCase) || !File.Exists(d.File)) return false;
+        var length = new FileInfo(d.File).Length;
+        return length != new FileInfo(m.Garbage).Length && length != new FileInfo(m.HalfCopied).Length;
+    }
+
+    private static string Describe(IEnumerable<DuplicateDecision> plan) =>
+        string.Join(Environment.NewLine, plan.Select(d => $"{Path.GetFileName(d.File)}: {(d.WillDelete ? "löschen" : d.IsKept ? "behalten" : "bleibt")} {d.Reason} {d.Why}"));
 
     private async Task<(LibraryAnalysis A, List<DuplicateDecision> Plan, DuplicateResult Result)> Clean(Library lib)
     {
@@ -270,7 +285,7 @@ public sealed class DuplicateTests(DuplicateMedia m)
             ("Privat/Hochzeit.mkv", m.Original), ("Privat/Hochzeit - Kopie.mkv", m.HalfCopied));
         var (a, plan, result) = await Clean(lib);
         Assert.Equal(3, a.Duplicates.Count);
-        Assert.Equal(3, result.Deleted.Count);
+        Assert.True(result.Deleted.Count == 3, Describe(plan));
         Assert.All(result.Deleted, d => Assert.Contains(L.T("unvollständige Kopie", "incomplete copy"), d.Why));
         Assert.False(File.Exists(lib.Source("Show/Show.S01E02 (1).mkv")));
         Assert.False(File.Exists(lib.Source("Filme/Glut (1995) - Kopie.mkv")));
