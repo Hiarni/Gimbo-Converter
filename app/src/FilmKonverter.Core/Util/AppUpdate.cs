@@ -72,7 +72,7 @@ public static partial class AppUpdate
     {
         if (string.IsNullOrWhiteSpace(folder) || !Directory.Exists(folder)) return null;
         var found = new List<AppRelease>();
-        foreach (var zip in Directory.EnumerateFiles(folder, "Gimbo-Konverter*.zip"))
+        foreach (var zip in Directory.EnumerateFiles(folder, "Gimbo-Converter*.zip").Concat(Directory.EnumerateFiles(folder, "Gimbo-Konverter*.zip")))
             if (ParseVersion(Path.GetFileNameWithoutExtension(zip)) is { } v) found.Add(new AppRelease(v, folder, LocalFile: zip));
         var exe = Path.Combine(folder, ExeName);
         if (File.Exists(exe) && ExeVersion(exe) is { } ev) found.Add(new AppRelease(ev, folder, LocalFile: exe));

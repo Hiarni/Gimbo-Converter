@@ -181,13 +181,13 @@ public class AppUpdateTests
     {
         const string json = """
             {"tag_name":"v2.2.0","draft":false,"prerelease":false,
-             "assets":[{"name":"Gimbo-Konverter-v2.2.0.zip","digest":"sha256:ABCDEF0123456789abcdef0123456789abcdef0123456789abcdef0123456789",
-                        "browser_download_url":"https://github.com/Hiarni/Gimbo-Converter/releases/download/v2.2.0/Gimbo-Konverter-v2.2.0.zip"}]}
+             "assets":[{"name":"Gimbo-Converter-v2.2.0.zip","digest":"sha256:ABCDEF0123456789abcdef0123456789abcdef0123456789abcdef0123456789",
+                        "browser_download_url":"https://github.com/Hiarni/Gimbo-Converter/releases/download/v2.2.0/Gimbo-Converter-v2.2.0.zip"}]}
             """;
         var r = AppUpdate.ParseGitHub(json)!;
         Assert.Equal("2.2.0", r.VersionText);
         Assert.Equal("abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789", r.Sha256);
-        Assert.EndsWith("Gimbo-Konverter-v2.2.0.zip", r.ZipUrl!.ToString());
+        Assert.EndsWith("Gimbo-Converter-v2.2.0.zip", r.ZipUrl!.ToString());
         Assert.Null(AppUpdate.ParseGitHub(json.Replace("\"prerelease\":false", "\"prerelease\":true")));
         Assert.Null(AppUpdate.ParseGitHub(json.Replace("https://", "http://")));
     }
@@ -205,7 +205,7 @@ public class AppUpdateTests
     {
         var dir = Dir();
         File.WriteAllBytes(Path.Combine(dir, "Gimbo-Konverter-v2.1.1.zip"), Zip(FakeExe(1)));
-        File.WriteAllBytes(Path.Combine(dir, "Gimbo-Konverter-v2.3.0.zip"), Zip(FakeExe(3)));
+        File.WriteAllBytes(Path.Combine(dir, "Gimbo-Converter-v2.3.0.zip"), Zip(FakeExe(3)));
         File.WriteAllBytes(Path.Combine(dir, "Gimbo-Konverter-v2.2.0.zip"), Zip(FakeExe(2)));
         File.WriteAllText(Path.Combine(dir, "Notizen.zip"), "x");
         var r = AppUpdate.CheckFolder(dir)!;

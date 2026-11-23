@@ -71,8 +71,8 @@ jobs:
           Copy-Item 'LICENSE' 'publish\LICENSE.txt'
           Copy-Item 'THIRD-PARTY-NOTICES.md' 'publish\THIRD-PARTY-NOTICES.txt'
           Copy-Item 'licenses\GPL-3.0.txt' 'publish\FFmpeg-GPL-3.0.txt'
-          Compress-Archive -Path 'publish\Gimbo Konverter.exe', 'publish\LICENSE.txt', 'publish\THIRD-PARTY-NOTICES.txt', 'publish\FFmpeg-GPL-3.0.txt' -DestinationPath 'Gimbo-Konverter.zip' -CompressionLevel Optimal
-          Get-Item 'publish\Gimbo Konverter.exe', 'Gimbo-Konverter.zip' | Format-Table Name, Length
+          Compress-Archive -Path 'publish\Gimbo Konverter.exe', 'publish\LICENSE.txt', 'publish\THIRD-PARTY-NOTICES.txt', 'publish\FFmpeg-GPL-3.0.txt' -DestinationPath 'Gimbo-Converter.zip' -CompressionLevel Optimal
+          Get-Item 'publish\Gimbo Konverter.exe', 'Gimbo-Converter.zip' | Format-Table Name, Length
 
       - name: Programm starten und alle Seiten abfotografieren (Deutsch und Englisch)
         shell: pwsh
@@ -103,8 +103,8 @@ jobs:
       - uses: actions/upload-artifact@v4
         continue-on-error: true
         with:
-          name: Gimbo-Konverter
-          path: Gimbo-Konverter.zip
+          name: Gimbo-Converter
+          path: Gimbo-Converter.zip
           if-no-files-found: error
           retention-days: 7
 
@@ -126,5 +126,5 @@ jobs:
         run: |
           $notes = "ZIP entpacken, ``Gimbo Konverter.exe`` starten.`n`nUnzip and run ``Gimbo Konverter.exe``."
           if (Test-Path 'app/RELEASE_NOTES.md') { $notes = (Get-Content 'app/RELEASE_NOTES.md' -Raw -Encoding utf8).Trim() }
-          Copy-Item 'Gimbo-Konverter.zip' "Gimbo-Konverter-$env:VERSION.zip"
-          gh release create "$env:VERSION" "Gimbo-Konverter-$env:VERSION.zip" --target "${{ github.sha }}" --title "Gimbo Konverter $env:VERSION" --notes $notes
+          Copy-Item 'Gimbo-Converter.zip' "Gimbo-Converter-$env:VERSION.zip"
+          gh release create "$env:VERSION" "Gimbo-Converter-$env:VERSION.zip" --target "${{ github.sha }}" --title "Gimbo Converter $env:VERSION" --notes $notes
