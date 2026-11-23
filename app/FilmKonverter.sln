@@ -1,0 +1,51 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{ACBA8249-2EC0-430E-9D58-22896DBC0EEA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FilmKonverter.Core.Tests", "tests\FilmKonverter.Core.Tests\FilmKonverter.Core.Tests.csproj", "{426AF490-26C0-423F-A853-A388182CB474}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D438A7AD-ABD7-48FC-9177-030CDE8DF27E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FilmKonverter.Core", "src\FilmKonverter.Core\FilmKonverter.Core.csproj", "{A826027F-3F97-4FFD-B421-800E12793A0A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FilmKonverter.App", "src\FilmKonverter.App\FilmKonverter.App.csproj", "{688BE514-496B-47AA-9648-050E59D877D7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{688BE514-496B-47AA-9648-050E59D877D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{688BE514-496B-47AA-9648-050E59D877D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{688BE514-496B-47AA-9648-050E59D877D7}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{688BE514-496B-47AA-9648-050E59D877D7}.Debug|x64.Build.0 = Debug|Any CPU
+		{688BE514-496B-47AA-9648-050E59D877D7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{688BE514-496B-47AA-9648-050E59D877D7}.Debug|x86.Build.0 = Debug|Any CPU
+		{688BE514-496B-47AA-9648-050E59D877D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{688BE514-496B-47AA-9648-050E59D877D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{688BE514-496B-47AA-9648-050E59D877D7}.Release|x64.ActiveCfg = Release|Any CPU
+		{688BE514-496B-47AA-9648-050E59D877D7}.Release|x64.Build.0 = Release|Any CPU
+		{688BE514-496B-47AA-9648-050E59D877D7}.Release|x86.ActiveCfg = Release|Any CPU
+		{688BE514-496B-47AA-9648-050E59D877D7}.Release|x86.Build.0 = Release|Any CPU
+		{426AF490-26C0-423F-A853-A388182CB474}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{426AF490-26C0-423F-A853-A388182CB474}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{426AF490-26C0-423F-A853-A388182CB474}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{426AF490-26C0-423F-A853-A388182CB474}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A826027F-3F97-4FFD-B421-800E12793A0A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A826027F-3F97-4FFD-B421-800E12793A0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A826027F-3F97-4FFD-B421-800E12793A0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A826027F-3F97-4FFD-B421-800E12793A0A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{688BE514-496B-47AA-9648-050E59D877D7} = {D438A7AD-ABD7-48FC-9177-030CDE8DF27E}
+		{426AF490-26C0-423F-A853-A388182CB474} = {ACBA8249-2EC0-430E-9D58-22896DBC0EEA}
+		{A826027F-3F97-4FFD-B421-800E12793A0A} = {D438A7AD-ABD7-48FC-9177-030CDE8DF27E}
+	EndGlobalSection
+EndGlobal

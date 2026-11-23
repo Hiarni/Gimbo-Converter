@@ -1,0 +1,218 @@
+<Page
+    x:Class="FilmKonverter.App.Pages.StatsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:l="clr-namespace:FilmKonverter.App"
+    xmlns:b="clr-namespace:FilmKonverter.App.Behaviors"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    Title="Statistik"
+    ScrollViewer.CanContentScroll="False">
+    <Page.Resources>
+        <DataTemplate x:Key="RankRowTemplate">
+            <Grid Margin="0,4" Background="Transparent" ToolTip="{Binding Text}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <DockPanel>
+                    <TextBlock Margin="8,0,0,0" DockPanel.Dock="Right" FontWeight="SemiBold" Foreground="{DynamicResource TextFillColorPrimaryBrush}" Text="{Binding Value}" />
+                    <TextBlock Foreground="{DynamicResource TextFillColorPrimaryBrush}" Text="{Binding Name}" TextTrimming="CharacterEllipsis" />
+                </DockPanel>
+                <Grid Grid.Row="1" Margin="0,3,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <ProgressBar Height="4" VerticalAlignment="Center" Maximum="100" Value="{Binding Percent, Mode=OneWay}" />
+                    <TextBlock Grid.Column="1" MinWidth="170" Margin="10,0,0,0" FontSize="12" Style="{StaticResource Muted}" Text="{Binding Text}" TextAlignment="Right" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
+                </Grid>
+            </Grid>
+        </DataTemplate>
+    </Page.Resources>
+    <ScrollViewer b:Wheel.ScrollPage="True" VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="24,8,24,20">
+            <DockPanel Margin="0,0,0,12">
+                <StackPanel VerticalAlignment="Top" DockPanel.Dock="Right" Orientation="Horizontal">
+                    <ComboBox Width="190" Margin="0,0,8,0" DisplayMemberPath="Text" ItemsSource="{Binding Periods}" SelectedValue="{Binding Period}" SelectedValuePath="Key" ToolTip="{l:T 'Zeitraum für die ganze Seite', 'Period for the whole page'}" />
+                    <ui:Button Margin="0,0,8,0" Command="{Binding RefreshCommand}" Content="{l:T 'Aktualisieren', 'Refresh'}" Icon="{ui:SymbolIcon ArrowSync24}" />
+                    <ui:Button Command="{Binding ResetCommand}" Content="{l:T 'Zurücksetzen …', 'Reset …'}" Icon="{ui:SymbolIcon ArrowReset24}" ToolTip="{l:T 'Statistik neu beginnen (Protokolle werden archiviert, nicht gelöscht)', 'Start the statistics from zero (logs are archived, not deleted)'}" />
+                </StackPanel>
+                <StackPanel>
+                    <TextBlock Style="{StaticResource PageTitle}" Text="{l:T 'Statistik', 'Statistics'}" />
+                    <TextBlock Margin="0,4,0,0" Style="{StaticResource Muted}" Text="{l:T 'Alles, was die PCs gemeinsam geschafft haben. Jeder PC schreibt sein Protokoll in den gemeinsamen Zielordner.', 'Everything the PCs have achieved together. Each PC writes its log to the shared target folder.'}" TextWrapping="Wrap" />
+                </StackPanel>
+            </DockPanel>
+
+            <TextBlock Margin="0,0,0,8" Foreground="#F85149" Text="{Binding Message}" TextWrapping="Wrap" Visibility="{Binding Message, Converter={StaticResource TextVis}}" />
+            <TextBlock Margin="0,0,0,8" Foreground="{DynamicResource AccentTextFillColorPrimaryBrush}" Text="{Binding InfoText}" TextWrapping="Wrap" Visibility="{Binding InfoText, Converter={StaticResource TextVis}}" />
+
+            <Grid Margin="0,0,0,12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <ui:Card Grid.Column="0" Margin="0,0,8,0" Padding="16,12" VerticalAlignment="Stretch" VerticalContentAlignment="Top">
+                    <StackPanel>
+                        <TextBlock Foreground="#2F81F7" Style="{StaticResource BigNumber}" Text="{Binding GainText}" />
+                        <TextBlock FontSize="12" Style="{StaticResource Muted}" Text="{Binding GainDetail}" TextWrapping="Wrap" />
+                    </StackPanel>
+                </ui:Card>
+                <ui:Card Grid.Column="1" Margin="0,0,8,0" Padding="16,12" VerticalAlignment="Stretch" VerticalContentAlignment="Top">
+                    <StackPanel>
+                        <TextBlock Foreground="#3FB950" Style="{StaticResource BigNumber}" Text="{Binding FilesText}" />
+                        <TextBlock FontSize="12" Style="{StaticResource Muted}" Text="{Binding FilesDetail}" TextWrapping="Wrap" />
+                    </StackPanel>
+                </ui:Card>
+                <ui:Card Grid.Column="2" Margin="0,0,8,0" Padding="16,12" VerticalAlignment="Stretch" VerticalContentAlignment="Top">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource BigNumber}" Text="{Binding RatioText}" />
+                        <TextBlock FontSize="12" Style="{StaticResource Muted}" Text="{Binding RatioDetail}" TextWrapping="Wrap" />
+                    </StackPanel>
+                </ui:Card>
+                <ui:Card Grid.Column="3" Padding="16,12" VerticalAlignment="Stretch" VerticalContentAlignment="Top">
+                    <StackPanel>
+                        <TextBlock Foreground="#E3B341" Style="{StaticResource BigNumber}" Text="{Binding TimeText}" />
+                        <TextBlock FontSize="12" Style="{StaticResource Muted}" Text="{Binding TimeDetail}" TextWrapping="Wrap" />
+                    </StackPanel>
+                </ui:Card>
+            </Grid>
+
+            <ui:Card Margin="0,0,0,12" Padding="16,12">
+                <DockPanel>
+                    <ui:SymbolIcon Margin="0,0,12,0" VerticalAlignment="Center" FontSize="22" Foreground="#2F81F7" Symbol="ArrowTrending24" />
+                    <TextBlock VerticalAlignment="Center" Foreground="{DynamicResource TextFillColorPrimaryBrush}" Text="{Binding Forecast}" TextWrapping="Wrap" />
+                </DockPanel>
+            </ui:Card>
+
+            <ui:Card Margin="0,0,0,12" Padding="16,12">
+                <StackPanel>
+                    <DockPanel Margin="0,0,0,10">
+                        <TextBlock VerticalAlignment="Center" Style="{StaticResource SectionTitle}" Text="{Binding ChartTitle}" />
+                        <TextBlock Margin="12,0,0,0" VerticalAlignment="Center" FontSize="12" Style="{StaticResource Muted}" Text="{Binding ChartMax, StringFormat='max. {0}'}" />
+                    </DockPanel>
+                    <ItemsControl Height="172" ItemsSource="{Binding Bars}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Rows="1" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="2,0" Background="Transparent" ToolTip="{Binding Tooltip}">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="150" />
+                                        <RowDefinition Height="22" />
+                                    </Grid.RowDefinitions>
+                                    <Border Height="{Binding Height}" VerticalAlignment="Bottom" Background="#2F81F7" CornerRadius="3,3,0,0" />
+                                    <TextBlock Grid.Row="1" Margin="0,4,0,0" HorizontalAlignment="Center" FontSize="11" Style="{StaticResource Muted}" Text="{Binding Label}" Visibility="{Binding ShowLabel, Converter={StaticResource BoolVis}}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <DockPanel Margin="0,14,0,6" Visibility="{Binding CumulativeText, Converter={StaticResource TextVis}}">
+                        <TextBlock Margin="12,0,0,0" VerticalAlignment="Center" DockPanel.Dock="Right" FontSize="12" Style="{StaticResource Muted}" Text="{Binding CumulativeText}" />
+                        <TextBlock VerticalAlignment="Center" Style="{StaticResource SectionTitle}" Text="{l:T 'Gesamtsumme im Zeitraum', 'Running total in the period'}" />
+                    </DockPanel>
+                    <Polygon Height="90" Fill="#332F81F7" Points="{Binding Cumulative}" Stretch="Fill" Stroke="#2F81F7" StrokeThickness="2" Visibility="{Binding CumulativeText, Converter={StaticResource TextVis}}" />
+                </StackPanel>
+            </ui:Card>
+
+            <ui:Card Margin="0,0,0,12" Padding="16,12" Visibility="{Binding HasData, Converter={StaticResource BoolVis}}">
+                <StackPanel>
+                    <TextBlock Margin="0,0,0,8" Style="{StaticResource SectionTitle}" Text="{l:T 'PC-Vergleich', 'PC comparison'}" />
+                    <Grid Margin="0,0,0,4">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" FontWeight="SemiBold" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="PC" />
+                        <TextBlock Grid.Column="1" FontWeight="SemiBold" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="{l:T 'Dateien', 'Files'}" TextAlignment="Right" />
+                        <TextBlock Grid.Column="2" FontWeight="SemiBold" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="{l:T 'Gewonnen', 'Saved'}" TextAlignment="Right" />
+                        <TextBlock Grid.Column="3" FontWeight="SemiBold" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="{l:T 'Bleiben', 'Remains'}" TextAlignment="Right" />
+                        <TextBlock Grid.Column="4" FontWeight="SemiBold" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="{l:T 'Tempo', 'Speed'}" TextAlignment="Right" ToolTip="{l:T 'Vielfaches der Echtzeit beim Kodieren', 'Multiple of real time while encoding'}" />
+                        <TextBlock Grid.Column="5" FontWeight="SemiBold" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="{l:T 'Rechenzeit', 'Time'}" TextAlignment="Right" />
+                        <TextBlock Grid.Column="6" FontWeight="SemiBold" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="{l:T 'Fehler', 'Errors'}" TextAlignment="Right" />
+                    </Grid>
+                    <ItemsControl ItemsSource="{Binding Machines}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="0,3">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="2*" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" FontWeight="SemiBold" Foreground="{DynamicResource TextFillColorPrimaryBrush}" Text="{Binding Machine}" />
+                                    <TextBlock Grid.Column="1" Foreground="{DynamicResource TextFillColorPrimaryBrush}" Text="{Binding Files}" TextAlignment="Right" />
+                                    <TextBlock Grid.Column="2" Foreground="#2F81F7" Text="{Binding Gain}" TextAlignment="Right" />
+                                    <TextBlock Grid.Column="3" Foreground="{DynamicResource TextFillColorPrimaryBrush}" Text="{Binding Ratio}" TextAlignment="Right" />
+                                    <TextBlock Grid.Column="4" Foreground="{DynamicResource TextFillColorPrimaryBrush}" Text="{Binding Speed}" TextAlignment="Right" />
+                                    <TextBlock Grid.Column="5" Foreground="{DynamicResource TextFillColorPrimaryBrush}" Text="{Binding Time}" TextAlignment="Right" />
+                                    <TextBlock Grid.Column="6" Foreground="{DynamicResource TextFillColorPrimaryBrush}" Text="{Binding Errors}" TextAlignment="Right" />
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </ui:Card>
+
+            <Grid Margin="0,0,0,12" Visibility="{Binding HasData, Converter={StaticResource BoolVis}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <ui:Card Grid.Column="0" Margin="0,0,8,0" Padding="16,12" VerticalAlignment="Stretch" VerticalContentAlignment="Top">
+                    <StackPanel>
+                        <TextBlock Margin="0,0,0,6" Style="{StaticResource SectionTitle}" Text="{l:T 'Nach Quellcodec', 'By source codec'}" />
+                        <ItemsControl ItemTemplate="{StaticResource RankRowTemplate}" ItemsSource="{Binding Codecs}" />
+                    </StackPanel>
+                </ui:Card>
+                <ui:Card Grid.Column="1" Padding="16,12" VerticalAlignment="Stretch" VerticalContentAlignment="Top">
+                    <StackPanel>
+                        <TextBlock Margin="0,0,0,6" Style="{StaticResource SectionTitle}" Text="{l:T 'Nach Auflösung der Quelle', 'By source resolution'}" />
+                        <ItemsControl ItemTemplate="{StaticResource RankRowTemplate}" ItemsSource="{Binding Resolutions}" />
+                    </StackPanel>
+                </ui:Card>
+            </Grid>
+            <ui:Card Margin="0,0,0,12" Padding="16,12" Visibility="{Binding HasData, Converter={StaticResource BoolVis}}">
+                <StackPanel>
+                    <TextBlock Margin="0,0,0,6" Style="{StaticResource SectionTitle}" Text="{l:T 'Serien und Filme mit der größten Ersparnis', 'Series and movies with the largest saving'}" />
+                    <ItemsControl ItemTemplate="{StaticResource RankRowTemplate}" ItemsSource="{Binding Groups}" />
+                </StackPanel>
+            </ui:Card>
+
+            <Grid Margin="0,0,0,8" Visibility="{Binding HasData, Converter={StaticResource BoolVis}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <ui:Card Grid.Column="0" Margin="0,0,8,0" Padding="16,12" VerticalAlignment="Stretch" VerticalContentAlignment="Top">
+                    <StackPanel>
+                        <TextBlock Margin="0,0,0,6" Style="{StaticResource SectionTitle}" Text="{l:T 'Größte Einzelersparnis', 'Largest single saving'}" />
+                        <ItemsControl ItemTemplate="{StaticResource RankRowTemplate}" ItemsSource="{Binding TopSavings}" />
+                    </StackPanel>
+                </ui:Card>
+                <ui:Card Grid.Column="1" Padding="16,12" VerticalAlignment="Stretch" VerticalContentAlignment="Top">
+                    <StackPanel>
+                        <TextBlock Margin="0,0,0,2" Style="{StaticResource SectionTitle}" Text="{l:T 'Am wenigsten geschrumpft', 'Shrunk the least'}" />
+                        <TextBlock Margin="0,0,0,6" FontSize="12" Style="{StaticResource Muted}" Text="{l:T 'Kandidaten für eine andere Qualitätsstufe oder die Ausnahmeliste', 'Candidates for another quality level or the skip list'}" />
+                        <ItemsControl ItemTemplate="{StaticResource RankRowTemplate}" ItemsSource="{Binding WorstRatios}" />
+                    </StackPanel>
+                </ui:Card>
+            </Grid>
+
+            <TextBlock FontSize="12" Style="{StaticResource Muted}" Text="{Binding Footer}" TextWrapping="Wrap" />
+        </StackPanel>
+    </ScrollViewer>
+</Page>

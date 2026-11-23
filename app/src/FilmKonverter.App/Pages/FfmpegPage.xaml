@@ -1,0 +1,99 @@
+<Page
+    x:Class="FilmKonverter.App.Pages.FfmpegPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:b="clr-namespace:FilmKonverter.App.Behaviors"
+    xmlns:c="clr-namespace:FilmKonverter.App.Controls"
+    xmlns:l="clr-namespace:FilmKonverter.App"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    Title="ffmpeg"
+    ScrollViewer.CanContentScroll="False">
+    <ScrollViewer b:Wheel.ScrollPage="True" VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="24,8,24,24">
+            <TextBlock Style="{StaticResource PageTitle}" Text="ffmpeg" />
+            <TextBlock Margin="0,4,0,0" Style="{StaticResource Muted}" Text="{l:T 'ffmpeg ist im Programm enthalten. Ist auf dem PC eine neuere Version installiert, wird automatisch diese verwendet, sofern sie den Encoder des gewählten Profils kennt.', 'ffmpeg is built into the program. If a newer version is installed on the PC, it is used automatically, provided it knows the encoder of the selected profile.'}" />
+
+            <TextBlock Style="{StaticResource GroupTitle}" Text="{l:T 'Aktiv', 'Active'}" />
+            <c:SettingCard Header="{Binding Version}" Description="{Binding ActiveText}" Icon="Video24">
+                <ui:Button Command="{Binding SearchCommand}" Content="{l:T 'Neu suchen', 'Search again'}" Icon="{ui:SymbolIcon ArrowSync24}" />
+            </c:SettingCard>
+            <TextBlock Margin="2,0,0,4" FontSize="12" Foreground="{DynamicResource AccentTextFillColorPrimaryBrush}" Text="{Binding Message}" TextWrapping="Wrap" Visibility="{Binding Message, Converter={StaticResource TextVis}}" />
+
+            <TextBlock Style="{StaticResource GroupTitle}" Text="{l:T 'Integriertes ffmpeg aktualisieren', 'Update the built-in ffmpeg'}" />
+            <c:SettingCard Header="{Binding BundledVersionText}" Description="{Binding UpdateText}" Icon="ArrowCircleDown24">
+                <StackPanel Orientation="Horizontal">
+                    <ui:Button Command="{Binding CheckUpdateCommand}" Content="{l:T 'Suchen', 'Check'}" Icon="{ui:SymbolIcon ArrowSync24}" IsEnabled="{Binding Updating, Converter={StaticResource Not}}" />
+                    <ui:Button Margin="8,0,0,0" Appearance="Primary" Command="{Binding InstallUpdateCommand}" Content="{l:T 'Aktualisieren', 'Update'}" Icon="{ui:SymbolIcon ArrowCircleDown24}" IsEnabled="{Binding Updating, Converter={StaticResource Not}}" Visibility="{Binding UpdateAvailable, Converter={StaticResource BoolVis}}" />
+                    <ui:Button Margin="8,0,0,0" Command="{Binding RollbackCommand}" Content="{l:T 'Zurück zur vorherigen', 'Back to previous'}" Icon="{ui:SymbolIcon ArrowUndo24}" Visibility="{Binding CanRollback, Converter={StaticResource BoolVis}}" />
+                </StackPanel>
+            </c:SettingCard>
+            <ProgressBar Margin="2,0,2,8" Height="4" Maximum="100" Value="{Binding UpdateProgress}" Visibility="{Binding Updating, Converter={StaticResource BoolVis}}" />
+            <TextBlock Margin="2,0,0,4" FontSize="12" Style="{StaticResource Muted}" Text="{l:T 'Geladen wird nur auf Knopfdruck die stabile Windows-Fassung von gyan.dev, dieselbe Variante wie die eingebaute. Jeder PC aktualisiert für sich.', 'Only on request, the stable Windows build from gyan.dev is downloaded, the same variant as the built-in one. Each PC updates on its own.'}" TextWrapping="Wrap" />
+
+            <TextBlock Style="{StaticResource GroupTitle}" Text="{l:T 'Auswahl', 'Selection'}" />
+            <c:SettingCard Header="{l:T 'Welche Version verwenden', 'Which version to use'}" Description="{Binding ModeHint}" Icon="Options24">
+                <ComboBox Width="280" DisplayMemberPath="Text" ItemsSource="{Binding Modes}" SelectedValue="{Binding Mode}" SelectedValuePath="Mode" />
+            </c:SettingCard>
+            <c:SettingCard Header="{l:T 'Eigener Ordner', 'Custom folder'}" Description="{l:T 'Muss ffmpeg.exe und ffprobe.exe enthalten.', 'Must contain ffmpeg.exe and ffprobe.exe.'}" Icon="Folder24" IsEnabled="{Binding IsCustom}" Wide="True">
+                <DockPanel>
+                    <ui:Button Margin="8,0,0,0" Appearance="Primary" Command="{Binding LoadCommand}" Content="{l:T 'Laden', 'Load'}" DockPanel.Dock="Right" />
+                    <ui:Button Margin="8,0,0,0" Command="{Binding BrowseCommand}" Content="{l:T 'Wählen …', 'Choose …'}" DockPanel.Dock="Right" Icon="{ui:SymbolIcon FolderOpen24}" />
+                    <TextBox Text="{Binding Folder, UpdateSourceTrigger=PropertyChanged}" />
+                </DockPanel>
+            </c:SettingCard>
+
+            <TextBlock Style="{StaticResource GroupTitle}" Text="{l:T 'Gefundene Versionen', 'Versions found'}" />
+            <ItemsControl ItemsSource="{Binding Installations}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Margin="0,0,0,4" Padding="16,10" Background="{DynamicResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="6">
+                            <DockPanel>
+                                <ui:Button
+                                    Margin="12,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Command="{Binding DataContext.UseInstallationCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                    CommandParameter="{Binding}"
+                                    Content="{l:T 'Verwenden', 'Use'}"
+                                    DockPanel.Dock="Right" />
+                                <TextBlock Margin="12,0,0,0" VerticalAlignment="Center" DockPanel.Dock="Right" FontWeight="SemiBold" Foreground="#3FB950" Text="{Binding State}" />
+                                <StackPanel>
+                                    <TextBlock FontWeight="SemiBold" Foreground="{DynamicResource TextFillColorPrimaryBrush}" Text="{Binding Title}" />
+                                    <TextBlock FontSize="12" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="{Binding Folder}" TextTrimming="CharacterEllipsis" />
+                                </StackPanel>
+                            </DockPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <TextBlock Style="{StaticResource GroupTitle}" Text="Encoder" />
+            <TextBlock Margin="2,0,0,8" FontSize="12" Style="{StaticResource Muted}" Text="{l:T '&quot;Vorhanden&quot; heißt nur, dass ffmpeg den Encoder kennt. Ob die Grafikkarte ihn wirklich kann, zeigt &quot;Testen&quot;.', '&quot;Available&quot; only means ffmpeg knows the encoder. &quot;Test&quot; shows whether the graphics card can really use it.'}" />
+            <ItemsControl ItemsSource="{Binding Encoders}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Margin="0,0,0,4" Padding="16,10" Background="{DynamicResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="6">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="180" />
+                                    <ColumnDefinition Width="110" />
+                                    <ColumnDefinition Width="100" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock VerticalAlignment="Center" FontWeight="SemiBold" Foreground="{DynamicResource TextFillColorPrimaryBrush}" Text="{Binding Title}" />
+                                <TextBlock Grid.Column="1" VerticalAlignment="Center" Style="{StaticResource Muted}" Text="{Binding Name}" />
+                                <TextBlock Grid.Column="2" VerticalAlignment="Center" Foreground="{Binding Available, Converter={StaticResource WarnBrush}, ConverterParameter=invert}" Text="{Binding Available, Converter={StaticResource BoolText}, ConverterParameter={l:T 'vorhanden|fehlt', 'available|missing'}}" />
+                                <ui:Button
+                                    Grid.Column="3"
+                                    Command="{Binding DataContext.TestCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                    CommandParameter="{Binding}"
+                                    Content="{l:T 'Testen', 'Test'}" />
+                                <TextBlock Grid.Column="4" Margin="12,0,0,0" VerticalAlignment="Center" Style="{StaticResource Muted}" Text="{Binding TestResult}" TextTrimming="CharacterEllipsis" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

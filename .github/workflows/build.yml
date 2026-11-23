@@ -1,0 +1,130 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+    paths:
+      - 'app/**'
+      - '.github/workflows/build.yml'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Versionsnummer fuer ein Release, z.B. v1.0.0 (leer = nur bauen)'
+        required: false
+        default: ''
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: ffmpeg fuer die Tests installieren
+        shell: pwsh
+        run: |
+          choco install ffmpeg -y --no-progress | Out-Null
+          $probe = Get-ChildItem 'C:\ProgramData\chocolatey\lib\ffmpeg' -Recurse -Filter ffprobe.exe | Select-Object -First 1
+          "FFMPEG_DIR=$($probe.DirectoryName)" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          & (Join-Path $probe.DirectoryName 'ffmpeg.exe') -hide_banner -version | Select-Object -First 1
+
+      - name: Kern testen
+        env:
+          GIMBO_NET_TESTS: "1"
+        run: dotnet test app/tests/FilmKonverter.Core.Tests -c Release --logger "console;verbosity=normal"
+
+      - name: ffmpeg fuer das Programm einpacken (wird in die EXE eingebettet)
+        shell: pwsh
+        run: |
+          $dir = $env:FFMPEG_DIR
+          $line = (& (Join-Path $dir 'ffmpeg.exe') -hide_banner -version | Select-Object -First 1)
+          $ver = $line -replace '^ffmpeg version (\S+).*$', '$1'
+          $tmp = Join-Path $env:RUNNER_TEMP 'ffbundle'
+          New-Item -ItemType Directory $tmp -Force | Out-Null
+          Copy-Item (Join-Path $dir 'ffmpeg.exe'), (Join-Path $dir 'ffprobe.exe') $tmp
+          [IO.File]::WriteAllText((Join-Path $tmp 'version.txt'), $ver)
+          Compress-Archive -Path (Join-Path $tmp '*') -DestinationPath 'app/src/FilmKonverter.App/ffmpeg-bundle.zip' -CompressionLevel Optimal -Force
+          Get-ChildItem $tmp | Format-Table Name, Length
+          Get-Item 'app/src/FilmKonverter.App/ffmpeg-bundle.zip' | Format-Table Name, Length
+          "Integriertes ffmpeg: $ver"
+          $ff = Join-Path $dir 'ffmpeg.exe'
+          "Encoder:"; & $ff -hide_banner -encoders | Select-String -Pattern ' (hevc_nvenc|hevc_amf|hevc_qsv|libx265|h264_nvenc|h264_amf|h264_qsv|libx264|av1_nvenc|av1_qsv|av1_amf|libsvtav1|libmp3lame|aac|flac|eac3|ac3) '
+          "Filter:"; & $ff -hide_banner -filters | Select-String -Pattern ' (zscale|tonemap|bwdif|ssim|scale) '
+          "Bitstream-Filter:"; & $ff -hide_banner -bsfs | Select-String -Pattern '^(dovi_rpu|mpeg4_unpack_bframes)$'
+
+      - name: Programm bauen (eine EXE, ohne Installation)
+        run: >
+          dotnet publish app/src/FilmKonverter.App -c Release -r win-x64 --self-contained true
+          -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true
+          -p:EnableCompressionInSingleFile=false -p:DebugType=none -o publish
+
+      - name: EXE mit Leerzeichen benennen und ZIP packen
+        shell: pwsh
+        run: |
+          Rename-Item 'publish\GimboKonverter.exe' 'Gimbo Konverter.exe'
+          Copy-Item 'LICENSE' 'publish\LICENSE.txt'
+          Copy-Item 'THIRD-PARTY-NOTICES.md' 'publish\THIRD-PARTY-NOTICES.txt'
+          Copy-Item 'licenses\GPL-3.0.txt' 'publish\FFmpeg-GPL-3.0.txt'
+          Compress-Archive -Path 'publish\Gimbo Konverter.exe', 'publish\LICENSE.txt', 'publish\THIRD-PARTY-NOTICES.txt', 'publish\FFmpeg-GPL-3.0.txt' -DestinationPath 'Gimbo-Konverter.zip' -CompressionLevel Optimal
+          Get-Item 'publish\Gimbo Konverter.exe', 'Gimbo-Konverter.zip' | Format-Table Name, Length
+
+      - name: Programm starten und alle Seiten abfotografieren (Deutsch und Englisch)
+        shell: pwsh
+        run: |
+          foreach ($lang in 'de', 'en') {
+            $shots = Join-Path $PWD "screenshots\$lang"
+            $p = Start-Process -FilePath 'publish\Gimbo Konverter.exe' -ArgumentList '--screenshots', "`"$shots`"", '--lang', $lang -PassThru
+            if (-not $p.WaitForExit(300000)) { $p.Kill(); throw "Programm haengt ($lang, keine Antwort nach 300 s)" }
+            if (Test-Path "$shots\FEHLER.txt") { Get-Content "$shots\FEHLER.txt"; throw "Fehler beim Start der Oberflaeche ($lang)" }
+            if ($p.ExitCode -ne 0) { throw "Exit-Code $($p.ExitCode) ($lang)" }
+            Get-ChildItem $shots | Format-Table Name, Length
+            foreach ($f in Get-ChildItem $shots -Filter *.png) {
+              $b = [Convert]::ToBase64String([IO.File]::ReadAllBytes($f.FullName))
+              for ($i = 0; $i -lt $b.Length; $i += 6000) {
+                Write-Output ('SHOT|' + $lang + '-' + $f.Name + '|' + $b.Substring($i, [Math]::Min(6000, $b.Length - $i)))
+              }
+            }
+            if (Test-Path "$shots\showcase") {
+              foreach ($f in Get-ChildItem "$shots\showcase" -Filter *.png) {
+                $b = [Convert]::ToBase64String([IO.File]::ReadAllBytes($f.FullName))
+                for ($i = 0; $i -lt $b.Length; $i += 6000) {
+                  Write-Output ('SHOT|showcase-' + $lang + '-' + $f.Name + '|' + $b.Substring($i, [Math]::Min(6000, $b.Length - $i)))
+                }
+              }
+            }
+          }
+
+      - uses: actions/upload-artifact@v4
+        continue-on-error: true
+        with:
+          name: Gimbo-Konverter
+          path: Gimbo-Konverter.zip
+          if-no-files-found: error
+          retention-days: 7
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        continue-on-error: true
+        with:
+          name: Screenshots
+          path: screenshots/
+          if-no-files-found: ignore
+          retention-days: 7
+
+      - name: Release mit der EXE anlegen (Versions-Tag oder Eingabe beim manuellen Start)
+        if: startsWith(github.ref, 'refs/tags/v') || inputs.version != ''
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ inputs.version != '' && inputs.version || github.ref_name }}
+        run: |
+          $notes = "ZIP entpacken, ``Gimbo Konverter.exe`` starten.`n`nUnzip and run ``Gimbo Konverter.exe``."
+          if (Test-Path 'app/RELEASE_NOTES.md') { $notes = (Get-Content 'app/RELEASE_NOTES.md' -Raw -Encoding utf8).Trim() }
+          Copy-Item 'Gimbo-Konverter.zip' "Gimbo-Konverter-$env:VERSION.zip"
+          gh release create "$env:VERSION" "Gimbo-Konverter-$env:VERSION.zip" --target "${{ github.sha }}" --title "Gimbo Konverter $env:VERSION" --notes $notes

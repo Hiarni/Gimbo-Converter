@@ -1,0 +1,371 @@
+<Page
+    x:Class="FilmKonverter.App.Pages.ProfilesPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:b="clr-namespace:FilmKonverter.App.Behaviors"
+    xmlns:c="clr-namespace:FilmKonverter.App.Controls"
+    xmlns:l="clr-namespace:FilmKonverter.App"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    Title="{l:T 'Profile', 'Profiles'}"
+    ScrollViewer.CanContentScroll="False">
+    <Grid Margin="24,8,24,12">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="240" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.ColumnSpan="2" Margin="0,0,0,12">
+            <TextBlock Style="{StaticResource PageTitle}" Text="{l:T 'Profile', 'Profiles'}" />
+            <TextBlock Margin="0,4,0,0" Style="{StaticResource Muted}" Text="{l:T 'Ein Profil pro PC bzw. Bibliothek, gewählt wird es auf der Startseite.', 'One profile per PC or library, chosen on the start page.'}" />
+        </StackPanel>
+
+        <DockPanel Grid.Row="1" Margin="0,0,20,0">
+            <StackPanel Margin="0,12,0,0" DockPanel.Dock="Bottom">
+                <Menu Margin="0,0,0,8">
+                    <MenuItem Header="{l:T 'Neu aus Vorlage', 'New from template'}">
+                        <MenuItem.Icon>
+                            <ui:SymbolIcon Symbol="Add24" />
+                        </MenuItem.Icon>
+                        <MenuItem Command="{Binding AddPresetCommand}" CommandParameter="nvidia" Header="NVIDIA" />
+                        <MenuItem Command="{Binding AddPresetCommand}" CommandParameter="amd" Header="AMD" />
+                        <MenuItem Command="{Binding AddPresetCommand}" CommandParameter="intel" Header="Intel" />
+                        <MenuItem Command="{Binding AddPresetCommand}" CommandParameter="cpu" Header="{l:T 'Prozessor', 'Processor'}" />
+                        <Separator />
+                        <MenuItem Command="{Binding AddPresetCommand}" CommandParameter="leer" Header="{l:T 'Leeres Profil', 'Empty profile'}" />
+                    </MenuItem>
+                </Menu>
+                <UniformGrid Columns="2">
+                    <ui:Button Margin="0,0,4,8" HorizontalAlignment="Stretch" Command="{Binding DuplicateCommand}" Content="{l:T 'Kopieren', 'Copy'}" Icon="{ui:SymbolIcon Copy24}" />
+                    <ui:Button Margin="4,0,0,8" HorizontalAlignment="Stretch" Command="{Binding DeleteCommand}" Content="{l:T 'Löschen', 'Delete'}" Icon="{ui:SymbolIcon Delete24}" />
+                    <ui:Button Margin="0,0,4,0" HorizontalAlignment="Stretch" Command="{Binding ImportCommand}" Content="Import" Icon="{ui:SymbolIcon ArrowImport24}" />
+                    <ui:Button Margin="4,0,0,0" HorizontalAlignment="Stretch" Command="{Binding ExportCommand}" Content="Export" Icon="{ui:SymbolIcon ArrowExportLtr24}" />
+                </UniformGrid>
+            </StackPanel>
+            <ListBox ItemsSource="{Binding Items}" SelectedItem="{Binding Selected}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Margin="0,4">
+                            <TextBlock FontWeight="SemiBold" Foreground="{DynamicResource TextFillColorPrimaryBrush}" Text="{Binding Name}" TextTrimming="CharacterEllipsis" />
+                            <TextBlock FontSize="12" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="{Binding QualityText}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </DockPanel>
+
+        <Grid Grid.Row="1" Grid.Column="1" Visibility="{Binding HasSelection, Converter={StaticResource BoolVis}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Border Margin="0,0,0,8" Padding="14,10" Background="#26D29922" BorderBrush="#D29922" BorderThickness="1" CornerRadius="6" Visibility="{Binding Warnings, Converter={StaticResource TextVis}}">
+                <DockPanel>
+                    <ui:SymbolIcon Margin="0,0,10,0" VerticalAlignment="Top" Symbol="Warning24" />
+                    <TextBlock Foreground="{DynamicResource TextFillColorPrimaryBrush}" Text="{Binding Warnings}" TextWrapping="Wrap" />
+                </DockPanel>
+            </Border>
+            <TabControl Grid.Row="1" Style="{StaticResource PageTabs}">
+                <TabItem Header="{l:T 'Allgemein', 'General'}">
+                    <ScrollViewer b:Wheel.ScrollPage="True" VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="0,4,12,24">
+                        <TextBlock Style="{StaticResource GroupTitle}" Text="{l:T 'Profil', 'Profile'}" />
+                        <c:SettingCard Header="{l:T 'Name', 'Name'}" Icon="Tag24" Wide="True">
+                            <TextBox Text="{Binding Name, UpdateSourceTrigger=LostFocus}" />
+                        </c:SettingCard>
+                        <TextBlock Style="{StaticResource GroupTitle}" Text="{l:T 'Ordner', 'Folders'}" />
+                        <c:SettingCard Header="{l:T 'Quellordner', 'Source folder'}" Description="{l:T 'Hier liegen die Originale.', 'The originals are here.'}" Icon="Folder24" Wide="True">
+                            <DockPanel>
+                                <ui:Button Margin="8,0,0,0" Command="{Binding OpenFolderCommand}" CommandParameter="in" DockPanel.Dock="Right" Icon="{ui:SymbolIcon Open24}" ToolTip="{l:T 'Im Explorer öffnen', 'Open in Explorer'}" />
+                                <ui:Button Margin="8,0,0,0" Command="{Binding BrowseInputCommand}" Content="{l:T 'Wählen …', 'Choose …'}" DockPanel.Dock="Right" Icon="{ui:SymbolIcon FolderOpen24}" />
+                                <TextBox Text="{Binding Selected.InputDir, UpdateSourceTrigger=LostFocus}" />
+                            </DockPanel>
+                        </c:SettingCard>
+                        <c:SettingCard Header="{l:T 'Zielordner', 'Target folder'}" Description="{l:T 'Die Ordnerstruktur der Quelle wird nachgebaut. Mehrere PCs können mit denselben Ordnern gleichzeitig arbeiten.', 'The folder structure of the source is recreated. Multiple PCs can work on the same folders at the same time.'}" Icon="FolderZip24" Wide="True">
+                            <DockPanel>
+                                <ui:Button Margin="8,0,0,0" Command="{Binding OpenFolderCommand}" CommandParameter="out" DockPanel.Dock="Right" Icon="{ui:SymbolIcon Open24}" ToolTip="{l:T 'Im Explorer öffnen', 'Open in Explorer'}" />
+                                <ui:Button Margin="8,0,0,0" Command="{Binding BrowseOutputCommand}" Content="{l:T 'Wählen …', 'Choose …'}" DockPanel.Dock="Right" Icon="{ui:SymbolIcon FolderOpen24}" />
+                                <TextBox Text="{Binding Selected.OutputDir, UpdateSourceTrigger=LostFocus}" />
+                            </DockPanel>
+                        </c:SettingCard>
+                    </StackPanel>
+                    </ScrollViewer>
+                </TabItem>
+                <TabItem Header="{l:T 'Qualität', 'Quality'}">
+                    <ScrollViewer b:Wheel.ScrollPage="True" VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="0,4,12,24">
+                        <TextBlock Style="{StaticResource GroupTitle}" Text="{l:T 'Encoder', 'Encoder'}" />
+                        <c:SettingCard Header="{l:T 'Encoder', 'Encoder'}" Description="{Binding SelectedSummary}" Icon="DeveloperBoard24">
+                            <ComboBox Width="280" DisplayMemberPath="Text" ItemsSource="{Binding Encoders}" SelectedValue="{Binding Encoder}" SelectedValuePath="Kind" />
+                        </c:SettingCard>
+                        <TextBlock Style="{StaticResource GroupTitle}" Text="{l:T 'Qualität', 'Quality'}" />
+                        <c:SettingCard Header="{Binding QualityLabel}" Description="{Binding QualityHint}" Icon="TopSpeed24" Wide="True" Visibility="{Binding IsNotAmf, Converter={StaticResource BoolVis}}">
+                            <StackPanel Orientation="Horizontal">
+                                <Slider Width="300" VerticalAlignment="Center" IsSnapToTickEnabled="True" Maximum="40" Minimum="15" TickFrequency="1" Value="{Binding Quality}" />
+                                <TextBox Width="70" Margin="12,0,0,0" Text="{Binding Quality, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+                        </c:SettingCard>
+                        <c:SettingCard Header="{l:T 'QP für I-Frames', 'QP for I-frames'}" Description="{Binding QualityHint}" Icon="TopSpeed24" Wide="True" Visibility="{Binding IsAmf, Converter={StaticResource BoolVis}}">
+                            <StackPanel Orientation="Horizontal">
+                                <Slider Width="300" VerticalAlignment="Center" IsSnapToTickEnabled="True" Maximum="40" Minimum="15" TickFrequency="1" Value="{Binding QpI}" />
+                                <TextBox Width="70" Margin="12,0,0,0" Text="{Binding QpI, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+                        </c:SettingCard>
+                        <c:SettingCard Header="{l:T 'QP für P-Frames', 'QP for P-frames'}" Description="{l:T 'Sollte 1–2 über dem I-Wert liegen.', 'Should be 1–2 above the I value.'}" Icon="TopSpeed24" Wide="True" Visibility="{Binding IsAmf, Converter={StaticResource BoolVis}}">
+                            <StackPanel Orientation="Horizontal">
+                                <Slider Width="300" VerticalAlignment="Center" IsSnapToTickEnabled="True" Maximum="40" Minimum="15" TickFrequency="1" Value="{Binding QpP}" />
+                                <TextBox Width="70" Margin="12,0,0,0" Text="{Binding QpP, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+                        </c:SettingCard>
+                        <StackPanel Visibility="{Binding IsNvenc, Converter={StaticResource BoolVis}}">
+                        <TextBlock Style="{StaticResource GroupTitle}" Text="{l:T 'NVIDIA', 'NVIDIA'}" />
+                        <c:SettingCard Header="{l:T 'Preset', 'Preset'}" Description="{l:T 'p7 = beste Qualität, etwas langsamer', 'p7 = best quality, a bit slower'}" Icon="Options24">
+                            <ComboBox Width="120" ItemsSource="{Binding NvencPresets}" SelectedItem="{Binding Selected.NvencPreset}" />
+                        </c:SettingCard>
+                        <c:SettingCard Header="{l:T 'AQ-Stärke', 'AQ strength'}" Description="{l:T 'Adaptive Quantisierung, 1–15', 'Adaptive quantisation, 1–15'}" Icon="Options24">
+                            <TextBox Width="100" Text="{Binding Selected.AqStrength, UpdateSourceTrigger=LostFocus}" />
+                        </c:SettingCard>
+                        <c:SettingCard Header="{l:T 'Lookahead', 'Lookahead'}" Description="{l:T 'Frames, die NVENC vorausschaut', 'Frames NVENC looks ahead'}" Icon="Options24">
+                            <TextBox Width="100" Text="{Binding Selected.Lookahead, UpdateSourceTrigger=LostFocus}" />
+                        </c:SettingCard>
+                        </StackPanel>
+                        <c:SettingCard Header="{l:T 'x265-Preset', 'x265 preset'}" Description="{l:T 'Langsamer = kleiner bei gleicher Qualität', 'Slower = smaller at the same quality'}" Icon="Options24" Visibility="{Binding IsCpu, Converter={StaticResource BoolVis}}">
+                            <ComboBox Width="160" ItemsSource="{Binding CpuPresets}" SelectedItem="{Binding Selected.CpuPreset}" />
+                        </c:SettingCard>
+                        <c:SettingCard Header="{l:T 'QSV-Preset', 'QSV preset'}" Icon="Options24" Visibility="{Binding IsQsv, Converter={StaticResource BoolVis}}">
+                            <ComboBox Width="160" ItemsSource="{Binding QsvPresets}" SelectedItem="{Binding Selected.QsvPreset}" />
+                        </c:SettingCard>
+                        <TextBlock Style="{StaticResource GroupTitle}" Text="{l:T 'Nach Auflösung der Quelle', 'By source resolution'}" />
+                        <c:SettingCard Header="{l:T 'Anpassung je Auflösung', 'Adjustment per resolution'}" Description="{l:T 'Wird zum Qualitätswert addiert. Negativ = bessere Qualität und größere Dateien. Faustregel: SD −2 bis −4 (wird am Fernseher stark vergrößert, Fehler fallen auf), 4K-Quellen, die auf 1080p verkleinert werden, vertragen +1 bis +2', 'Added to the quality value. Negative = better quality and larger files. Rule of thumb: SD −2 to −4 (heavily enlarged on the TV, flaws show), 4K sources scaled down to 1080p tolerate +1 to +2'}" Icon="ResizeLarge24" Wide="True">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="SD" />
+                                <TextBox Width="52" Text="{Binding Selected.QualityAdjustSd, UpdateSourceTrigger=LostFocus}" />
+                                <TextBlock Margin="12,0,6,0" VerticalAlignment="Center" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="720p" />
+                                <TextBox Width="52" Text="{Binding Selected.QualityAdjust720, UpdateSourceTrigger=LostFocus}" />
+                                <TextBlock Margin="12,0,6,0" VerticalAlignment="Center" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="1080p" />
+                                <TextBox Width="52" Text="{Binding Selected.QualityAdjust1080, UpdateSourceTrigger=LostFocus}" />
+                                <TextBlock Margin="12,0,6,0" VerticalAlignment="Center" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="4K" />
+                                <TextBox Width="52" Text="{Binding Selected.QualityAdjust4K, UpdateSourceTrigger=LostFocus}" />
+                            </StackPanel>
+                        </c:SettingCard>
+                    </StackPanel>
+                    </ScrollViewer>
+                </TabItem>
+                <TabItem Header="{l:T 'Video', 'Video'}">
+                    <ScrollViewer b:Wheel.ScrollPage="True" VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="0,4,12,24">
+                        <TextBlock Style="{StaticResource GroupTitle}" Text="{l:T 'Bild', 'Picture'}" />
+                        <c:SettingCard Header="{l:T 'Maximale Auflösung', 'Maximum resolution'}" Description="{l:T 'Größere Quellen werden mit Lanczos verkleinert, nie vergrößert. 4K → 1080p spart oft 60–75 %.', 'Larger sources are downscaled with Lanczos, never upscaled. 4K → 1080p often saves 60–75 %.'}" Icon="ResizeLarge24">
+                            <ComboBox Width="280" DisplayMemberPath="Text" ItemsSource="{Binding Resolutions}" SelectedItem="{Binding Resolution}" />
+                        </c:SettingCard>
+                        <c:SettingCard Header="{l:T 'Eigene Auflösung', 'Custom resolution'}" Description="{l:T 'Breite × Höhe', 'Width × height'}" Icon="ResizeLarge24" Visibility="{Binding IsCustomResolution, Converter={StaticResource BoolVis}}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBox Width="90" Text="{Binding CustomWidth, UpdateSourceTrigger=LostFocus}" />
+                                <TextBlock Margin="10,0" VerticalAlignment="Center" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="×" />
+                                <TextBox Width="90" Text="{Binding CustomHeight, UpdateSourceTrigger=LostFocus}" />
+                            </StackPanel>
+                        </c:SettingCard>
+                        <c:SettingCard Header="{l:T 'Maximale Bildrate', 'Maximum frame rate'}" Description="{l:T 'Nur für 50/60-fps-Material sinnvoll. 23,976 und 25 fps bleiben ohnehin.', 'Only useful for 50/60 fps material. 23.976 and 25 fps stay anyway.'}" Icon="FastForward24">
+                            <ComboBox Width="220" DisplayMemberPath="Text" ItemsSource="{Binding FpsOptions}" SelectedValue="{Binding MaxFps}" SelectedValuePath="Value" />
+                        </c:SettingCard>
+                        <c:SettingCard Header="{l:T 'Deinterlacing', 'Deinterlacing'}" Description="{l:T 'Zeilensprung, z.B. TV-Aufnahmen und DVDs', 'Interlaced video, e.g. TV recordings and DVDs'}" Icon="Layer24">
+                            <ComboBox Width="280" DisplayMemberPath="Text" ItemsSource="{Binding DeinterlaceOptions}" SelectedValue="{Binding DeinterlaceValue}" SelectedValuePath="Mode" />
+                        </c:SettingCard>
+                        <TextBlock Style="{StaticResource GroupTitle}" Text="{l:T 'Kodierung', 'Encoding'}" />
+                        <c:SettingCard Header="{l:T 'Immer 10 Bit, auch für 8-Bit-Quellen', 'Always 10 bit, also for 8-bit sources'}" Description="{l:T 'Weniger Farbabstufungen in Himmel und Schatten, kaum größer. Nicht bei AMD.', 'Less banding in skies and shadows, hardly larger. Not with AMD.'}" Icon="ColorBackground24" IsEnabled="{Binding IsNotAmf}">
+                            <ui:ToggleSwitch IsChecked="{Binding TenBit}" />
+                        </c:SettingCard>
+                        <c:SettingCard Header="{l:T 'Hardware-Dekodierung', 'Hardware decoding'}" Description="{l:T 'Die Grafikkarte dekodiert die Quelle. Schneller bei 4K-HEVC, entlastet den Prozessor.', 'The graphics card decodes the source. Faster with 4K HEVC, relieves the processor.'}" Icon="Flash24">
+                            <ui:ToggleSwitch IsChecked="{Binding HardwareDecode}" />
+                        </c:SettingCard>
+                    </StackPanel>
+                    </ScrollViewer>
+                </TabItem>
+                <TabItem Header="{l:T 'Ton', 'Audio'}">
+                    <ScrollViewer b:Wheel.ScrollPage="True" VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="0,4,12,24">
+                        <TextBlock Style="{StaticResource GroupTitle}" Text="{l:T 'Spuren', 'Tracks'}" />
+                        <c:SettingCard Header="{l:T 'Nur diese Sprachen behalten', 'Only keep these languages'}" Description="{l:T 'z.B. de, en · leer = alle · Spuren ohne Sprachangabe bleiben immer, mindestens eine Spur bleibt immer', 'e.g. de, en · empty = all · tracks without a language tag always stay, at least one track always stays'}" Icon="Translate24" Wide="True">
+                            <TextBox Text="{Binding Selected.AudioLanguages, UpdateSourceTrigger=LostFocus}" />
+                        </c:SettingCard>
+                        <c:SettingCard Header="{l:T 'Standard-Tonspur', 'Default audio track'}" Description="{l:T 'Diese Sprache wird beim Abspielen zuerst gewählt und kommt an die erste Stelle (viele Fernseher spielen nur die erste Tonspur direkt ab) · leer = unverändert', 'This language is chosen first on playback and moved to the first position (many TVs only play the first audio track directly) · empty = unchanged'}" Icon="LocalLanguage24">
+                            <TextBox Width="120" Text="{Binding Selected.DefaultAudioLanguage, UpdateSourceTrigger=LostFocus}" />
+                        </c:SettingCard>
+                        <c:SettingCard Header="{l:T 'Kommentarspuren entfernen', 'Remove commentary tracks'}" Icon="CommentMultiple24">
+                            <ui:ToggleSwitch IsChecked="{Binding Selected.RemoveCommentary}" />
+                        </c:SettingCard>
+                        <c:SettingCard Header="{l:T 'Audiodeskription entfernen', 'Remove audio description'}" Description="{l:T 'Hörfilm-Spuren für Sehbehinderte', 'Tracks for the visually impaired'}" Icon="PersonVoice24">
+                            <ui:ToggleSwitch IsChecked="{Binding Selected.RemoveAudioDescription}" />
+                        </c:SettingCard>
+                        <TextBlock Style="{StaticResource GroupTitle}" Text="{l:T 'Umwandeln', 'Convert'}" />
+                        <c:SettingCard Header="{l:T 'Verlustfreien Ton umwandeln', 'Convert lossless audio'}" Description="{l:T 'TrueHD, DTS-HD MA, FLAC, PCM · Fernseher können sie kaum direkt abspielen · spart oft 2–4 GB pro Film · 7.1 wird 5.1', 'TrueHD, DTS-HD MA, FLAC, PCM · TVs can hardly play them directly · often saves 2–4 GB per movie · 7.1 becomes 5.1'}" Icon="Speaker224">
+                            <ui:ToggleSwitch IsChecked="{Binding Selected.ConvertLosslessAudio}" />
+                        </c:SettingCard>
+                        <c:SettingCard Header="{l:T 'DTS und andere TV-fremde Formate umwandeln', 'Convert DTS and other formats TVs cannot play'}" Description="{l:T 'Kopiert werden dann nur AAC, AC3, E-AC3, MP3 und MP2. Alles andere (DTS, Opus, Vorbis, WMA, Ton aus TV-Aufnahmen …) wird umgewandelt, sonst müsste der Medienserver den Ton bei jeder Wiedergabe umrechnen', 'Only AAC, AC3, E-AC3, MP3 and MP2 are then copied. Everything else (DTS, Opus, Vorbis, WMA, audio from TV recordings …) is converted, otherwise the media server would have to convert the audio on every playback'}" Icon="Speaker224">
+                            <ui:ToggleSwitch IsChecked="{Binding Selected.ConvertDts}" />
+                        </c:SettingCard>
+                        <c:SettingCard Header="{l:T 'Zielformat', 'Target format'}" Icon="Settings24">
+                            <ComboBox Width="280" DisplayMemberPath="Text" ItemsSource="{Binding AudioTargets}" SelectedValue="{Binding Target}" SelectedValuePath="Target" />
+                        </c:SettingCard>
+                        <c:SettingCard Header="{l:T 'Bitrate für 5.1', 'Bitrate for 5.1'}" Description="{l:T 'Stereo 256, Mono 128', 'Stereo 256, mono 128'}" Icon="Settings24">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBox Width="100" Text="{Binding Selected.AudioBitrateKbit, UpdateSourceTrigger=LostFocus}" />
+                                <TextBlock Margin="8,0,0,0" VerticalAlignment="Center" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="kbit/s" />
+                            </StackPanel>
+                        </c:SettingCard>
+                    </StackPanel>
+                    </ScrollViewer>
+                </TabItem>
+                <TabItem Header="{l:T 'Untertitel', 'Subtitles'}">
+                    <ScrollViewer b:Wheel.ScrollPage="True" VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="0,4,12,24">
+                        <TextBlock Style="{StaticResource GroupTitle}" Text="{l:T 'Spuren', 'Tracks'}" />
+                        <c:SettingCard Header="{l:T 'Nur diese Sprachen behalten', 'Only keep these languages'}" Description="{l:T 'z.B. de, en · leer = alle · Spuren ohne Sprachangabe bleiben immer', 'e.g. de, en · empty = all · tracks without a language tag always stay'}" Icon="Translate24" Wide="True">
+                            <TextBox Text="{Binding Selected.SubtitleLanguages, UpdateSourceTrigger=LostFocus}" />
+                        </c:SettingCard>
+                        <c:SettingCard Header="{l:T 'Bild-Untertitel entfernen', 'Remove image subtitles'}" Description="{l:T 'PGS und VobSub, erzwungene ausgenommen. Viele Geräte zeigen sie nur, wenn das Video beim Streamen neu kodiert wird.', 'PGS and VobSub, except forced ones. Many devices only show them if the video is transcoded while streaming.'}" Icon="ClosedCaption24">
+                            <ui:ToggleSwitch IsChecked="{Binding Selected.RemoveImageSubtitles}" />
+                        </c:SettingCard>
+                        <c:SettingCard Header="{l:T 'Schriftarten-Anhänge übernehmen', 'Keep font attachments'}" Description="{l:T 'Für ASS-Untertitel. MP4-Untertitel werden automatisch zu SRT.', 'For ASS subtitles. MP4 subtitles are converted to SRT automatically.'}" Icon="TextFont24">
+                            <ui:ToggleSwitch IsChecked="{Binding Selected.KeepAttachments}" />
+                        </c:SettingCard>
+                        <TextBlock Style="{StaticResource GroupTitle}" Text="{l:T 'Erzwungene Untertitel', 'Forced subtitles'}" />
+                        <c:SettingCard Header="{l:T 'Erkennung', 'Detection'}" Description="{Binding ForcedHint}" Icon="ClosedCaption24">
+                            <ComboBox Width="300" DisplayMemberPath="Text" ItemsSource="{Binding ForcedModes}" SelectedValue="{Binding ForcedMode}" SelectedValuePath="Mode" />
+                        </c:SettingCard>
+                        <c:SettingCard Header="{l:T 'Zusätzlich als Standard markieren', 'Also flag as default'}" Description="{l:T 'Viele Fernseher-Apps zeigen sie sonst nicht von selbst · gilt nur für Text-Untertitel, Bild-Untertitel (PGS, VobSub) werden nie als Standard markiert', 'Many TV apps do not show them on their own otherwise · applies to text subtitles only, image subtitles (PGS, VobSub) are never flagged as default'}" Icon="ClosedCaption24">
+                            <ui:ToggleSwitch IsChecked="{Binding Selected.ForcedSubtitlesDefault}" />
+                        </c:SettingCard>
+                    </StackPanel>
+                    </ScrollViewer>
+                </TabItem>
+                <TabItem Header="{l:T 'Auswahl', 'Selection'}">
+                    <ScrollViewer b:Wheel.ScrollPage="True" VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="0,4,12,24">
+                        <TextBlock Style="{StaticResource GroupTitle}" Text="{l:T 'Dateien', 'Files'}" />
+                        <c:SettingCard Header="{l:T 'Dateitypen', 'File types'}" Icon="DocumentCopy24" Wide="True">
+                            <TextBox Text="{Binding ExtensionsText, UpdateSourceTrigger=LostFocus}" />
+                        </c:SettingCard>
+                        <c:SettingCard Header="{l:T 'Auslassen, wenn der Name passt', 'Skip if the name matches'}" Description="{l:T 'Platzhalter * und ?, getrennt durch ;', 'Wildcards * and ?, separated by ;'}" Icon="Filter24" Wide="True">
+                            <TextBox Text="{Binding Selected.ExcludePatterns, UpdateSourceTrigger=LostFocus}" />
+                        </c:SettingCard>
+                        <c:SettingCard Header="{l:T 'Mindestgröße', 'Minimum size'}" Description="{l:T '0 = alle', '0 = all'}" Icon="DataUsage24">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBox Width="100" Text="{Binding Selected.MinSizeMb, UpdateSourceTrigger=LostFocus}" />
+                                <TextBlock Margin="8,0,0,0" VerticalAlignment="Center" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="MB" />
+                            </StackPanel>
+                        </c:SettingCard>
+                        <c:SettingCard Header="{l:T 'Neue Dateien abwarten', 'Wait for new files'}" Description="{l:T 'Jüngere Dateien werden ausgelassen, sie werden evtl. noch kopiert', 'Newer files are skipped, they may still be being copied'}" Icon="Clock24">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBox Width="100" Text="{Binding Selected.SkipNewerThanMinutes, UpdateSourceTrigger=LostFocus}" />
+                                <TextBlock Margin="8,0,0,0" VerticalAlignment="Center" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="min" />
+                            </StackPanel>
+                        </c:SettingCard>
+                        <c:SettingCard Header="{l:T 'Reihenfolge', 'Order'}" Icon="ArrowSort24">
+                            <ComboBox Width="380" DisplayMemberPath="Text" ItemsSource="{Binding Orders}" SelectedValue="{Binding Order}" SelectedValuePath="Order" />
+                        </c:SettingCard>
+                        <TextBlock Style="{StaticResource GroupTitle}" Text="{l:T 'Überspringen', 'Skip'}" />
+                        <c:SettingCard Header="{l:T 'Quellen in AV1', 'AV1 sources'}" Icon="VideoClip24">
+                            <ui:ToggleSwitch IsChecked="{Binding Selected.SkipAv1}" />
+                        </c:SettingCard>
+                        <c:SettingCard Header="{l:T 'Quellen in HEVC', 'HEVC sources'}" Description="{l:T 'Sind meist schon effizient', 'Usually efficient already'}" Icon="VideoClip24">
+                            <ui:ToggleSwitch IsChecked="{Binding Selected.SkipHevc}" />
+                        </c:SettingCard>
+                        <c:SettingCard Header="{l:T 'HDR-Quellen', 'HDR sources'}" Description="{Binding HdrHint}" Icon="VideoClip24">
+                            <ui:ToggleSwitch IsChecked="{Binding Selected.SkipHdr}" />
+                        </c:SettingCard>
+                        <c:SettingCard Header="{l:T 'Dann nur den Ton umwandeln', 'Then convert only the audio'}" Description="{l:T 'Wird das Video übersprungen (HEVC, AV1, HDR …), aber der Ton umgewandelt oder Spuren entfernt: Video unverändert kopieren, nur der Ton wird kleiner', 'If the video is skipped (HEVC, AV1, HDR …) but audio is converted or tracks removed: copy the video unchanged, only the audio gets smaller'}" Icon="Speaker224">
+                            <ui:ToggleSwitch IsChecked="{Binding Selected.AudioOnlyForSkipped}" />
+                        </c:SettingCard>
+                        <TextBlock Style="{StaticResource GroupTitle}" Text="{l:T 'Mindest-Datenrate', 'Minimum bitrate'}" />
+                        <c:SettingCard Header="{l:T 'Nur Quellen über', 'Only sources above'}" Description="{l:T 'Mbit/s · 0 = kein Filter · z.B. 8 für Blu-ray-Remuxe · Quellen mit Ton zum Umwandeln zählen immer', 'Mbit/s · 0 = no filter · e.g. 8 for Blu-ray remuxes · sources with audio to convert always count'}" Icon="DataUsage24">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBox Width="80" Text="{Binding Selected.MinRateMbit, UpdateSourceTrigger=LostFocus}" />
+                                <ComboBox Width="190" Margin="8,0,0,0" DisplayMemberPath="Text" ItemsSource="{Binding Bases}" SelectedValue="{Binding Basis}" SelectedValuePath="Basis" />
+                            </StackPanel>
+                        </c:SettingCard>
+                    </StackPanel>
+                    </ScrollViewer>
+                </TabItem>
+                <TabItem Header="{l:T 'Erweitert', 'Advanced'}">
+                    <ScrollViewer b:Wheel.ScrollPage="True" VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="0,4,12,24">
+                        <TextBlock Style="{StaticResource GroupTitle}" Text="{l:T 'Größe', 'Size'}" />
+                        <c:SettingCard Header="{l:T 'Grenze', 'Limit'}" Description="{Binding EarlyAbortText}" Icon="TopSpeed24">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBox Width="80" Text="{Binding Selected.EarlyAbortPercent, UpdateSourceTrigger=LostFocus}" />
+                                <TextBlock Margin="8,0,0,0" VerticalAlignment="Center" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="%" />
+                            </StackPanel>
+                        </c:SettingCard>
+                        <c:SettingCard Header="{l:T 'Prognose prüfen ab', 'Check forecast from'}" Description="{l:T 'Fortschritt, ab dem der Frühabbruch greift', 'Progress from which early abort applies'}" Icon="Clock24">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBox Width="80" Text="{Binding Selected.EarlyAbortFromPercent, UpdateSourceTrigger=LostFocus}" />
+                                <TextBlock Margin="8,0,0,0" VerticalAlignment="Center" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="%" />
+                            </StackPanel>
+                        </c:SettingCard>
+                        <TextBlock Style="{StaticResource GroupTitle}" Text="{l:T 'Prüfungen', 'Checks'}" />
+                        <c:SettingCard Header="{l:T 'Vorhandene Zieldateien prüfen', 'Check existing target files'}" Description="{l:T 'Bei Bedarf aus der Quelle neu kodieren', 'Re-encode from the source if needed'}" Icon="DocumentCopy24">
+                            <ui:ToggleSwitch IsChecked="{Binding Selected.CheckExisting}" />
+                        </c:SettingCard>
+                        <c:SettingCard Header="{l:T 'Gemeinsame Ausnahmeliste', 'Shared skip list'}" Description="{l:T 'Was nicht klein genug wurde, wird nicht erneut versucht (Ordner _Merkliste)', 'What did not get small enough is not tried again (folder _Merkliste)'}" Icon="Filter24">
+                            <ui:ToggleSwitch IsChecked="{Binding Selected.UseMarkList}" />
+                        </c:SettingCard>
+                        <c:SettingCard Header="{l:T 'Ganze Ausgabedatei streng dekodieren', 'Strictly decode the whole output'}" Description="{l:T 'An: jede neue Datei wird von Anfang bis Ende geprüft, bevor sie zählt. Aus: nur die ersten Bilder werden geprüft, ein Schaden weiter hinten bleibt unbemerkt (schneller)', 'On: every new file is checked from start to end before it counts. Off: only the first frames are checked, damage further in goes unnoticed (faster)'}" Icon="ShieldCheckmark24">
+                            <ui:ToggleSwitch IsChecked="{Binding Selected.FullDecodeTest}" />
+                        </c:SettingCard>
+                        <TextBlock Style="{StaticResource GroupTitle}" Text="{l:T 'Qualitätskontrolle', 'Quality control'}" />
+                        <c:SettingCard Header="{l:T 'Bildqualität stichprobenartig messen (SSIM)', 'Measure picture quality by samples (SSIM)'}" Description="{l:T 'Vergleicht ein paar Stellen mit dem Original. Auffällige Dateien landen in der Problemliste, gelöscht wird nichts', 'Compares a few spots with the original. Files that stand out go to the problem list, nothing is deleted'}" Icon="ImageSearch24">
+                            <ui:ToggleSwitch IsChecked="{Binding Selected.SsimCheck}" />
+                        </c:SettingCard>
+                        <c:SettingCard Header="{l:T 'Auffällig unter', 'Flag below'}" Description="{l:T 'SSIM 0–1, 1 = identisch. Richtwert: ab 0,98 kaum zu sehen, unter 0,95 oft sichtbar', 'SSIM 0–1, 1 = identical. Guide: from 0.98 hardly visible, below 0.95 often visible'}" Icon="ImageSearch24">
+                            <TextBox Width="80" Text="{Binding SsimMinText, UpdateSourceTrigger=LostFocus}" />
+                        </c:SettingCard>
+                        <c:SettingCard Header="{l:T 'Stichproben', 'Samples'}" Description="{l:T 'Je 5 Sekunden, gleichmäßig verteilt', '5 seconds each, evenly spread'}" Icon="ImageSearch24">
+                            <TextBox Width="80" Text="{Binding Selected.SsimSamples, UpdateSourceTrigger=LostFocus}" />
+                        </c:SettingCard>
+                        <TextBlock Style="{StaticResource GroupTitle}" Text="{l:T 'Dateien', 'Files'}" />
+                        <c:SettingCard Header="{l:T 'Änderungsdatum der Quelle übernehmen', 'Keep the source modification date'}" Description="{l:T 'Sortierung nach Datum bleibt richtig', 'Sorting by date stays correct'}" Icon="Calendar24">
+                            <ui:ToggleSwitch IsChecked="{Binding Selected.PreserveDates}" />
+                        </c:SettingCard>
+                        <c:SettingCard Header="{l:T 'Begleitdateien mitkopieren', 'Copy companion files'}" Description="{l:T 'Untertitel, .nfo und Bilder mit gleichem Namen', 'Subtitles, .nfo and images with the same name'}" Icon="DocumentCopy24">
+                            <ui:ToggleSwitch IsChecked="{Binding Selected.CopySidecars}" />
+                        </c:SettingCard>
+                        <c:SettingCard Header="{l:T 'Mindestens frei im Ziel', 'Minimum free in the target'}" Description="{l:T 'Sonst hält der Lauf an', 'Otherwise the run stops'}" Icon="HardDrive24">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBox Width="80" Text="{Binding Selected.MinFreeSpaceGb, UpdateSourceTrigger=LostFocus}" />
+                                <TextBlock Margin="8,0,0,0" VerticalAlignment="Center" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="GB" />
+                            </StackPanel>
+                        </c:SettingCard>
+                        <c:SettingCard Header="{l:T 'Fremde Sperren verwaist nach', 'Locks of other programs expire after'}" Description="{l:T 'Gilt für Sperren ohne Lebenszeichen, die nicht von diesem Programm stammen. Sperren dieses Programms erneuern sich alle 10 Minuten und gelten nach einer Stunde Stille als verwaist.', 'Applies to locks without a sign of life that were not made by this program. Locks of this program renew every 10 minutes and count as abandoned after one hour of silence.'}" Icon="LockClosed24">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBox Width="80" Text="{Binding Selected.LockStaleHours, UpdateSourceTrigger=LostFocus}" />
+                                <TextBlock Margin="8,0,0,0" VerticalAlignment="Center" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="h" />
+                            </StackPanel>
+                        </c:SettingCard>
+                        <TextBlock Style="{StaticResource GroupTitle}" Text="{l:T 'Testmodus', 'Test mode'}" />
+                        <c:SettingCard Header="{l:T 'Ausschnitt', 'Clip'}" Description="{l:T 'Start und Länge in Sekunden', 'Start and length in seconds'}" Icon="Beaker24">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBox Width="80" Text="{Binding Selected.TestStartSeconds, UpdateSourceTrigger=LostFocus}" />
+                                <TextBlock Margin="10,0" VerticalAlignment="Center" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="/" />
+                                <TextBox Width="80" Text="{Binding Selected.TestLengthSeconds, UpdateSourceTrigger=LostFocus}" />
+                            </StackPanel>
+                        </c:SettingCard>
+                        <c:SettingCard Header="{l:T 'Testwerte', 'Test values'}" Description="{l:T 'Durch Leerzeichen getrennt · AMD: Paare I/P wie 22/24', 'Separated by spaces · AMD: pairs I/P like 22/24'}" Icon="Beaker24" Wide="True">
+                            <TextBox Text="{Binding Selected.TestValues, UpdateSourceTrigger=LostFocus}" />
+                        </c:SettingCard>
+                    </StackPanel>
+                    </ScrollViewer>
+                </TabItem>
+            </TabControl>
+            <DockPanel Grid.Row="2" Margin="0,10,0,0">
+                <ui:Button Appearance="Primary" Command="{Binding SaveCommand}" Content="{l:T 'Speichern', 'Save'}" DockPanel.Dock="Left" Icon="{ui:SymbolIcon Save24}" />
+                <ui:Button Margin="8,0,0,0" Command="{Binding ResetToPresetCommand}" Content="{l:T 'Auf Vorlage zurücksetzen', 'Reset to template'}" DockPanel.Dock="Left" Icon="{ui:SymbolIcon ArrowReset24}" />
+                <TextBlock Margin="12,0,0,0" VerticalAlignment="Center" Style="{StaticResource Muted}" Text="{Binding SavedText}" TextTrimming="CharacterEllipsis" />
+            </DockPanel>
+        </Grid>
+    </Grid>
+</Page>

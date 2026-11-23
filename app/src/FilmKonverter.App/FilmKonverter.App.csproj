@@ -1,0 +1,45 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <AssemblyName>GimboKonverter</AssemblyName>
+    <RootNamespace>FilmKonverter.App</RootNamespace>
+    <Version>2.3.4</Version>
+    <Product>Gimbo Konverter</Product>
+    <AssemblyTitle>Gimbo Konverter</AssemblyTitle>
+    <Company>Hiarni</Company>
+    <Copyright>Copyright © 2026 Hiarni</Copyright>
+    <ApplicationIcon>Assets\GimboKonverter.ico</ApplicationIcon>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="WPF-UI" Version="3.0.5" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="System.IO" />
+    <Using Remove="System.Windows.Forms" />
+    <Using Remove="System.Drawing" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="ffmpeg-bundle.zip" LogicalName="ffmpeg-bundle.zip" Condition="Exists('ffmpeg-bundle.zip')" />
+    <Resource Include="Assets\GimboKonverter.ico" />
+    <Resource Include="Assets\icon-256.png" />
+    <Resource Include="Assets\icon-32.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FilmKonverter.Core\FilmKonverter.Core.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,197 @@
+<Page
+    x:Class="FilmKonverter.App.Pages.SettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:b="clr-namespace:FilmKonverter.App.Behaviors"
+    xmlns:c="clr-namespace:FilmKonverter.App.Controls"
+    xmlns:l="clr-namespace:FilmKonverter.App"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    Title="{l:T 'Einstellungen', 'Settings'}"
+    ScrollViewer.CanContentScroll="False">
+    <Grid Margin="24,8,24,12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <StackPanel Margin="0,0,0,8">
+            <TextBlock Style="{StaticResource PageTitle}" Text="{l:T 'Einstellungen', 'Settings'}" />
+            <TextBlock Margin="0,4,0,0" Style="{StaticResource Muted}" Text="{l:T 'Gelten für diesen PC und werden sofort gespeichert. Einstellungen zum Kodieren stehen in den Profilen.', 'Apply to this PC and are saved immediately. Encoding settings are in the profiles.'}" />
+        </StackPanel>
+        <Border Grid.Row="1" Margin="0,4,0,4" Padding="12,8" Background="#262F81F7" BorderBrush="#2F81F7" BorderThickness="1" CornerRadius="6" Visibility="{Binding Message, Converter={StaticResource TextVis}}">
+            <TextBlock Foreground="{DynamicResource TextFillColorPrimaryBrush}" Text="{Binding Message}" TextWrapping="Wrap" />
+        </Border>
+        <TabControl Grid.Row="2" Margin="0,8,0,0" Style="{StaticResource PageTabs}">
+            <TabItem Header="{l:T 'Start und Fenster', 'Startup and window'}">
+                <ScrollViewer b:Wheel.ScrollPage="True" VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="0,4,12,24">
+                    <TextBlock Style="{StaticResource GroupTitle}" Text="{l:T 'Start', 'Startup'}" />
+                    <c:SettingCard Header="{l:T 'Symbol im Infobereich', 'Icon in the notification area'}" Description="{l:T 'Neben der Uhr: Fortschritt im Tooltip, Rechtsklick für Start, Pause, Stopp und Beenden.', 'Next to the clock: progress in the tooltip, right-click for start, pause, stop and exit.'}" Icon="WindowApps24">
+                        <ui:ToggleSwitch IsChecked="{Binding ShowTrayIcon}" />
+                    </c:SettingCard>
+                    <TextBlock Margin="2,0,0,8" FontSize="12" Foreground="#E3B341" Text="{Binding TrayNote}" TextWrapping="Wrap" Visibility="{Binding TrayNote, Converter={StaticResource TextVis}}" />
+                    <c:SettingCard Header="{l:T 'Mit Windows starten', 'Start with Windows'}" Description="{l:T 'Beim Anmelden, ohne Adminrechte, nur für diesen Benutzer.', 'At sign-in, without admin rights, for this user only.'}" Icon="Power24">
+                        <ui:ToggleSwitch IsChecked="{Binding StartWithWindows}" />
+                    </c:SettingCard>
+                    <c:SettingCard Header="{l:T 'Beim Windows-Start nur im Infobereich', 'Only in the notification area at Windows startup'}" Description="{l:T 'Kein Fenster nach dem Anmelden.', 'No window after sign-in.'}" Icon="EyeOff24" IsEnabled="{Binding StartWithWindows}">
+                        <ui:ToggleSwitch IsChecked="{Binding AutostartMinimized}" />
+                    </c:SettingCard>
+                    <c:SettingCard Header="{l:T 'Immer minimiert starten', 'Always start minimized'}" Description="{l:T 'Auch beim Start von Hand.', 'Also when started manually.'}" Icon="ArrowMinimize24">
+                        <ui:ToggleSwitch IsChecked="{Binding StartMinimized}" />
+                    </c:SettingCard>
+                    <c:SettingCard Header="{l:T 'Gewähltes Profil automatisch beginnen', 'Start the selected profile automatically'}" Description="{l:T 'Nach dem Programmstart, nach dem Windows-Start mit 30 Sekunden Wartezeit.', 'After the program starts, 30 seconds after Windows startup.'}" Icon="Play24">
+                        <ui:ToggleSwitch IsChecked="{Binding AutoStartRun}" />
+                    </c:SettingCard>
+                    <TextBlock Style="{StaticResource GroupTitle}" Text="{l:T 'Fenster', 'Window'}" />
+                    <c:SettingCard Header="{l:T 'Beim Minimieren in den Infobereich', 'Minimize to the notification area'}" Description="{l:T 'Das Fenster verschwindet aus der Taskleiste, die Arbeit läuft weiter.', 'The window leaves the taskbar, work continues.'}" Icon="ArrowCircleDown24" IsEnabled="{Binding ShowTrayIcon}">
+                        <ui:ToggleSwitch IsChecked="{Binding MinimizeToTray}" />
+                    </c:SettingCard>
+                    <c:SettingCard Header="{l:T 'Beim Schließen im Hintergrund weiterlaufen', 'Keep running in the background when closed'}" Description="{l:T 'Beenden dann über „Beenden“ unten in der Seitenleiste oder das Symbol im Infobereich (Rechtsklick → Beenden).', 'Exit via “Exit” at the bottom of the sidebar or the notification area icon (right-click → Exit).'}" Icon="Dismiss24" IsEnabled="{Binding ShowTrayIcon}">
+                        <ui:ToggleSwitch IsChecked="{Binding CloseToTray}" />
+                    </c:SettingCard>
+                    <c:SettingCard Header="{l:T 'Beim Beenden während der Arbeit nachfragen', 'Ask before exiting while working'}" Icon="QuestionCircle24">
+                        <ui:ToggleSwitch IsChecked="{Binding ConfirmExit}" />
+                    </c:SettingCard>
+                </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+            <TabItem Header="{l:T 'Arbeitsweise', 'Operation'}">
+                <ScrollViewer b:Wheel.ScrollPage="True" VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="0,4,12,24">
+                    <TextBlock Style="{StaticResource GroupTitle}" Text="{l:T 'Leistung', 'Performance'}" />
+                    <c:SettingCard Header="{l:T 'Priorität von ffmpeg', 'ffmpeg priority'}" Description="{l:T '„Niedriger als normal“ hält den PC flüssig und kostet kaum Tempo.', '&quot;Below normal&quot; keeps the PC responsive and costs hardly any speed.'}" Icon="TopSpeed24">
+                        <ComboBox Width="260" DisplayMemberPath="Text" ItemsSource="{Binding Priorities}" SelectedValue="{Binding Priority}" SelectedValuePath="Value" />
+                    </c:SettingCard>
+                    <c:SettingCard Header="{l:T 'Gleichzeitige Dateien', 'Files at once'}" Description="{l:T 'Moderne Grafikkarten kodieren mehrere Dateien parallel und nutzen den Encoder besser aus, Wartezeiten beim Lesen übers Netzwerk überlappen. Beim Prozessor-Encoder bringt es nichts.', 'Modern graphics cards encode several files in parallel and use the encoder better, network read waits overlap. Brings nothing with the processor encoder.'}" Icon="Stack24">
+                        <ComboBox Width="230" DisplayMemberPath="Text" ItemsSource="{Binding ParallelOptions}" SelectedValue="{Binding ParallelFiles}" SelectedValuePath="Value" />
+                    </c:SettingCard>
+                    <c:SettingCard Header="{l:T 'Standby verhindern, solange gearbeitet wird', 'Prevent sleep while working'}" Description="{l:T 'Der PC bleibt wach, solange Dateien bearbeitet werden. Wartet das Programm nur auf das Zeitfenster oder hat der letzte Durchlauf nichts gefunden, darf er schlafen.', 'The PC stays awake while files are being processed. While the program only waits for the time window, or the last pass found nothing to do, it may sleep.'}" Icon="WeatherMoon24">
+                        <ui:ToggleSwitch IsChecked="{Binding PreventSleep}" />
+                    </c:SettingCard>
+                    <TextBlock Style="{StaticResource GroupTitle}" Text="{l:T 'Rücksicht', 'Stay out of the way'}" />
+                    <c:SettingCard Header="{l:T 'Bei Vollbild pausieren', 'Pause in full screen'}" Description="{l:T 'Spiel, Film oder Präsentation im Vollbild: ffmpeg hält an und macht 30 Sekunden danach von selbst weiter. Fernwartung und virtuelle Maschinen zählen nicht.', 'Game, film or presentation in full screen: ffmpeg pauses and continues on its own 30 seconds afterwards. Remote desktop and virtual machines do not count.'}" Icon="Games24">
+                        <ui:ToggleSwitch IsChecked="{Binding PauseWhenFullscreen}" />
+                    </c:SettingCard>
+                    <c:SettingCard Header="{l:T 'Im Vollbild nicht pausieren bei', 'Do not pause in full screen for'}" Description="{l:T 'Weitere Programmnamen, mit Komma getrennt. Welches Programm eine Pause auslöst, steht dann im Status auf der Startseite.', 'More program names, separated by commas. The status on the start page names the program that triggers a pause.'}" Icon="AppsList24" IsEnabled="{Binding PauseWhenFullscreen}">
+                        <TextBox Width="260" Text="{Binding FullscreenIgnore, UpdateSourceTrigger=LostFocus}" />
+                    </c:SettingCard>
+                    <c:SettingCard Header="{l:T 'Pausieren, solange jemand am PC arbeitet', 'Pause while someone is using the PC'}" Description="{l:T 'Arbeitet nur, wenn Maus und Tastatur eine Weile unberührt sind.', 'Only works when mouse and keyboard have been untouched for a while.'}" Icon="PersonClock24">
+                        <ui:ToggleSwitch IsChecked="{Binding PauseWhenUserActive}" />
+                    </c:SettingCard>
+                    <c:SettingCard Header="{l:T 'Als frei gilt der PC nach', 'PC counts as idle after'}" Description="{l:T 'Minuten ohne Eingabe', 'minutes without input'}" Icon="Timer24" IsEnabled="{Binding PauseWhenUserActive}">
+                        <TextBox Width="100" Text="{Binding UserIdleMinutes, UpdateSourceTrigger=LostFocus}" />
+                    </c:SettingCard>
+                    <TextBlock Style="{StaticResource GroupTitle}" Text="{l:T 'Mehrere PCs', 'Multiple PCs'}" />
+                    <c:SettingCard Header="{l:T 'Mit anderen PCs abstimmen', 'Coordinate with other PCs'}" Description="{l:T 'Ausnahmeliste, Statistik, Warteschlange und Status liegen in einem versteckten Ordner (.gimbo) im Quellordner. Dort finden ihn alle PCs von selbst, einzurichten ist nichts. Zusätzlich ist alles auf diesem PC gesichert. Im Zielordner liegen nur die komprimierten Videos. Aus: alles bleibt auf diesem PC, andere PCs sehen dann weder Status noch Warteschlange.', 'Skip list, statistics, queue and status live in a hidden folder (.gimbo) inside the source folder. All PCs find it there on their own, nothing to set up. Everything is also backed up on this PC. The target folder holds only the compressed videos. Off: everything stays on this PC; other PCs then see neither status nor queue.'}" Icon="PeopleTeam24">
+                        <ui:ToggleSwitch IsChecked="{Binding ShareData}" />
+                    </c:SettingCard>
+                    <c:SettingCard Header="{l:T 'Status für andere PCs sichtbar machen', 'Show status to other PCs'}" Description="{l:T 'Die anderen PCs zeigen dann auf ihrer Startseite, was hier läuft.', 'The other PCs then show on their start page what is running here.'}" Icon="Organization24" IsEnabled="{Binding ShareData}">
+                        <ui:ToggleSwitch IsChecked="{Binding ShareStatus}" />
+                    </c:SettingCard>
+                    <TextBlock Style="{StaticResource GroupTitle}" Text="{l:T 'Automatik', 'Automation'}" />
+                    <c:SettingCard Header="{l:T 'Dauerbetrieb', 'Continuous mode'}" Description="{l:T 'Nach dem Durchlauf warten und erneut durchsuchen, neue Dateien kommen automatisch dran.', 'After a pass, wait and scan again; new files are picked up automatically.'}" Icon="ArrowRepeatAll24">
+                        <ui:ToggleSwitch IsChecked="{Binding ContinuousMode}" />
+                    </c:SettingCard>
+                    <c:SettingCard Header="{l:T 'Erneut durchsuchen nach', 'Scan again after'}" Description="{l:T 'Minuten', 'minutes'}" Icon="Timer24" IsEnabled="{Binding ContinuousMode}">
+                        <TextBox Width="100" Text="{Binding RescanMinutes, UpdateSourceTrigger=LostFocus}" />
+                    </c:SettingCard>
+                    <c:SettingCard Header="{l:T 'Nur in einem Zeitfenster arbeiten', 'Only work within a time window'}" Description="{l:T 'Zum Beispiel nachts. Eine laufende Datei wird immer fertig gemacht.', 'For example at night. A file in progress is always finished.'}" Icon="CalendarClock24">
+                        <ui:ToggleSwitch IsChecked="{Binding ScheduleEnabled}" />
+                    </c:SettingCard>
+                    <c:SettingCard Header="{l:T 'Zeitfenster', 'Time window'}" Description="{Binding ScheduleText}" Icon="Clock24" IsEnabled="{Binding ScheduleEnabled}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox Width="80" Text="{Binding ScheduleFrom, UpdateSourceTrigger=LostFocus}" />
+                            <TextBlock Margin="10,0" VerticalAlignment="Center" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="–" />
+                            <TextBox Width="80" Text="{Binding ScheduleTo, UpdateSourceTrigger=LostFocus}" />
+                        </StackPanel>
+                    </c:SettingCard>
+                    <c:SettingCard Header="{l:T 'Nach dem Lauf', 'After the run'}" Description="{l:T 'Mit 60 Sekunden Countdown, auf der Startseite abbrechbar. Nicht nach Abbruch oder im Dauerbetrieb.', 'With a 60 second countdown that can be cancelled on the start page. Not after cancelling or in continuous mode.'}" Icon="Power24">
+                        <ComboBox Width="230" DisplayMemberPath="Text" ItemsSource="{Binding AfterRunOptions}" SelectedValue="{Binding AfterRun}" SelectedValuePath="Value" />
+                    </c:SettingCard>
+                </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+            <TabItem Header="{l:T 'Hinweise und Darstellung', 'Notifications and appearance'}">
+                <ScrollViewer b:Wheel.ScrollPage="True" VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="0,4,12,24">
+                    <TextBlock Style="{StaticResource GroupTitle}" Text="{l:T 'Benachrichtigungen', 'Notifications'}" />
+                    <c:SettingCard Header="{l:T 'Wenn ein Lauf fertig ist', 'When a run is finished'}" Description="{l:T 'Mit Zusammenfassung. Fehler wie „Speicher voll“ kommen immer.', 'With a summary. Errors such as &quot;disk full&quot; are always shown.'}" Icon="Alert24">
+                        <ui:ToggleSwitch IsChecked="{Binding Notifications}" />
+                    </c:SettingCard>
+                    <c:SettingCard Header="{l:T 'Für jede fertige Datei', 'For every finished file'}" Icon="AlertOn24">
+                        <ui:ToggleSwitch IsChecked="{Binding NotifyEachFile}" />
+                    </c:SettingCard>
+                    <c:SettingCard Header="{l:T 'Fortschritt in der Taskleiste', 'Progress in the taskbar'}" Description="{l:T 'Grün beim Arbeiten, gelb bei Pause, rot nach einem Fehler.', 'Green while working, yellow when paused, red after an error.'}" Icon="TaskListSquareLtr24">
+                        <ui:ToggleSwitch IsChecked="{Binding TaskbarProgress}" />
+                    </c:SettingCard>
+                    <TextBlock Style="{StaticResource GroupTitle}" Text="{l:T 'Darstellung', 'Appearance'}" />
+                    <c:SettingCard Header="{l:T 'Design', 'Theme'}" Icon="PaintBrush24">
+                        <ComboBox Width="220" DisplayMemberPath="Text" ItemsSource="{Binding Themes}" SelectedValue="{Binding Theme}" SelectedValuePath="Mode" />
+                    </c:SettingCard>
+                    <c:SettingCard Header="{l:T 'Seitenleiste ausgeklappt', 'Sidebar expanded'}" Description="{l:T 'Mit Beschriftung statt nur Symbolen. Der Menü-Knopf oben links schaltet auch um, das Programm merkt sich den Zustand.', 'With labels instead of icons only. The menu button at the top left also toggles it; the program remembers the state.'}" Icon="PanelLeft24">
+                        <ui:ToggleSwitch IsChecked="{Binding SidebarExpanded}" />
+                    </c:SettingCard>
+                    <c:SettingCard Header="{l:T 'Sprache / Language', 'Language / Sprache'}" Description="{l:T 'Automatisch: Deutsch bei deutschem Windows, sonst Englisch.', 'Automatic: German on a German Windows, English otherwise.'}" Icon="LocalLanguage24">
+                        <ComboBox Width="260" DisplayMemberPath="Text" ItemsSource="{Binding Languages}" SelectedValue="{Binding Language}" SelectedValuePath="Value" />
+                    </c:SettingCard>
+                    <Border Margin="0,0,0,4" Padding="12,8" Background="#262F81F7" BorderBrush="#2F81F7" BorderThickness="1" CornerRadius="6" Visibility="{Binding RestartNeeded, Converter={StaticResource BoolVis}}">
+                        <DockPanel>
+                            <ui:Button Margin="12,0,0,0" Appearance="Primary" Command="{Binding RestartNowCommand}" Content="{l:T 'Jetzt neu starten', 'Restart now'}" DockPanel.Dock="Right" Icon="{ui:SymbolIcon ArrowSync24}" />
+                            <TextBlock VerticalAlignment="Center" Foreground="{DynamicResource TextFillColorPrimaryBrush}" Text="{l:T 'Die Sprache wechselt nach einem Neustart. / The language changes after a restart.', 'The language changes after a restart. / Die Sprache wechselt nach einem Neustart.'}" TextWrapping="Wrap" />
+                        </DockPanel>
+                    </Border>
+                </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+            <TabItem Header="{l:T 'Daten und Info', 'Data and info'}">
+                <ScrollViewer b:Wheel.ScrollPage="True" VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="0,4,12,24">
+                    <TextBlock Style="{StaticResource GroupTitle}" Text="{l:T 'Daten', 'Data'}" />
+                    <c:SettingCard Header="{l:T 'Datenordner', 'Data folder'}" Description="{l:T 'Einstellungen und Tagesprotokolle dieses PCs', 'Settings and daily logs of this PC'}" Icon="Folder24" Wide="True">
+                        <DockPanel>
+                            <ui:Button Margin="8,0,0,0" Command="{Binding OpenTodayLogCommand}" Content="{l:T 'Heutiges Protokoll', 'Today’s log'}" DockPanel.Dock="Right" Icon="{ui:SymbolIcon DocumentText24}" />
+                            <ui:Button Margin="8,0,0,0" Command="{Binding OpenDataFolderCommand}" Content="{l:T 'Öffnen', 'Open'}" DockPanel.Dock="Right" Icon="{ui:SymbolIcon FolderOpen24}" />
+                            <TextBox IsReadOnly="True" Text="{Binding DataFolder, Mode=OneWay}" />
+                        </DockPanel>
+                    </c:SettingCard>
+                    <c:SettingCard Header="{l:T 'Protokolle aufbewahren', 'Keep logs'}" Description="{l:T 'Tage, 0 = immer. Profile sichern oder übertragen: Seite „Profile“ → Export / Import.', 'Days, 0 = forever. Back up or move profiles: page &quot;Profiles&quot; → Export / Import.'}" Icon="History24">
+                        <TextBox Width="100" Text="{Binding LogRetentionDays, UpdateSourceTrigger=LostFocus}" />
+                    </c:SettingCard>
+                    <TextBlock Style="{StaticResource GroupTitle}" Text="{l:T 'Programm-Update', 'Program update'}" />
+                    <c:SettingCard Header="{l:T 'Neue Version von Gimbo', 'New version of Gimbo'}" Description="{Binding AppUpdateText}" Icon="ArrowCircleDown24">
+                        <StackPanel Orientation="Horizontal">
+                            <ui:Button Command="{Binding CheckAppUpdateCommand}" Content="{l:T 'Suchen', 'Check'}" Icon="{ui:SymbolIcon ArrowSync24}" IsEnabled="{Binding AppUpdating, Converter={StaticResource Not}}" />
+                            <ui:Button Margin="8,0,0,0" Appearance="Primary" Command="{Binding InstallAppUpdateCommand}" Content="{l:T 'Jetzt aktualisieren', 'Update now'}" Icon="{ui:SymbolIcon ArrowCircleDown24}" IsEnabled="{Binding AppUpdating, Converter={StaticResource Not}}" Visibility="{Binding AppUpdateAvailable, Converter={StaticResource BoolVis}}" />
+                        </StackPanel>
+                    </c:SettingCard>
+                    <ProgressBar Margin="2,0,2,8" Height="4" Maximum="100" Value="{Binding AppUpdateProgress}" Visibility="{Binding AppUpdating, Converter={StaticResource BoolVis}}" />
+                    <c:SettingCard Header="{l:T 'Täglich nach Updates suchen', 'Check for updates daily'}" Description="{l:T 'Einmal am Tag, auch wenn das Programm durchläuft: neue Versionen von Gimbo und vom integrierten ffmpeg. Gemeldet wird auf der Startseite und im Infobereich, installiert wird erst auf Knopfdruck.', 'Once a day, also while the program keeps running: new versions of Gimbo and the built-in ffmpeg. Shown on the start page and in the notification area, installed only on request.'}" Icon="CalendarClock24">
+                        <ui:ToggleSwitch IsChecked="{Binding CheckForAppUpdates}" />
+                    </c:SettingCard>
+                    <c:SettingCard Header="{l:T 'Update-Ordner', 'Update folder'}" Description="{l:T 'Zusätzlich zu GitHub, z.B. ein Netzwerkordner: Liegt dort eine neuere ZIP oder EXE von Gimbo, finden alle PCs sie.', 'In addition to GitHub, e.g. a network folder: if a newer ZIP or EXE of Gimbo is there, all PCs find it.'}" Icon="Folder24" Wide="True">
+                        <DockPanel>
+                            <ui:Button Margin="8,0,0,0" Command="{Binding PickAppUpdateFolderCommand}" Content="{l:T 'Wählen …', 'Choose …'}" DockPanel.Dock="Right" Icon="{ui:SymbolIcon FolderOpen24}" />
+                            <TextBox Text="{Binding AppUpdateFolder, UpdateSourceTrigger=LostFocus}" />
+                        </DockPanel>
+                    </c:SettingCard>
+                    <TextBlock Style="{StaticResource GroupTitle}" Text="{l:T 'Über', 'About'}" />
+                    <Border Padding="20,16" Background="{DynamicResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="6">
+                        <DockPanel>
+                            <Image Width="64" Height="64" Margin="0,0,16,0" DockPanel.Dock="Left" Source="pack://application:,,,/Assets/icon-256.png" />
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock FontSize="18" FontWeight="SemiBold" Foreground="{DynamicResource TextFillColorPrimaryBrush}" Text="Gimbo Konverter" />
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Style="{StaticResource Muted}" Text="Version " />
+                                    <TextBlock Style="{StaticResource Muted}" Text="{Binding AppVersion}" />
+                                    <TextBlock Style="{StaticResource Muted}" Text="{l:T '  ·  dieser PC: ', '  ·  this PC: '}" />
+                                    <TextBlock Style="{StaticResource Muted}" Text="{Binding ComputerName}" />
+                                </StackPanel>
+                            </StackPanel>
+                        </DockPanel>
+                    </Border>
+                </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Page>
