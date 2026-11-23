@@ -117,23 +117,19 @@ public sealed class DuplicateTests(DuplicateMedia m)
 
     private Task<LibraryAnalysis> Analyse(Library lib) => LibraryAnalyzer.AnalyzeAsync(lib.P, m.Tools, new ProbeCache(), null, CancellationToken.None);
 
-    private async Task<List<DuplicateDecision>> Plan(Library lib, LibraryAnalysis a)
+    private async Task<List<DuplicateDecision>> Plan(Library lib, LibraryAnalysis a, TimeSpan skipNewerThan = default)
     {
-        var plan = await DuplicateCleaner.PlanAsync(a.Duplicates, m.Tools, CancellationToken.None, lib.In, lib.Out);
+        var plan = await DuplicateCleaner.PlanAsync(a.Duplicates, m.Tools, CancellationToken.None, lib.In, lib.Out, null, skipNewerThan);
         for (var attempt = 1; attempt < 4 && plan.Any(BrieflyUnreadable); attempt++)
         {
             await Task.Delay(1500 * attempt);
-            plan = await DuplicateCleaner.PlanAsync(a.Duplicates, m.Tools, CancellationToken.None, lib.In, lib.Out);
+            plan = await DuplicateCleaner.PlanAsync(a.Duplicates, m.Tools, CancellationToken.None, lib.In, lib.Out, null, skipNewerThan);
         }
         return plan;
     }
 
-    private bool BrieflyUnreadable(DuplicateDecision d)
-    {
-        if (d.Reason is null || !d.Reason.Contains(L.T("lesbar", "readable"), StringComparison.OrdinalIgnoreCase) || !File.Exists(d.File)) return false;
-        var length = new FileInfo(d.File).Length;
-        return length != new FileInfo(m.Garbage).Length && length != new FileInfo(m.HalfCopied).Length;
-    }
+    private static bool BrieflyUnreadable(DuplicateDecision d) =>
+        d.Reason is not null && d.Reason.Contains(L.T("lesbar", "readable"), StringComparison.OrdinalIgnoreCase) && File.Exists(d.File);
 
     private static string Describe(IEnumerable<DuplicateDecision> plan) =>
         string.Join(Environment.NewLine, plan.Select(d => $"{Path.GetFileName(d.File)}: {(d.WillDelete ? "löschen" : d.IsKept ? "behalten" : "bleibt")} {d.Reason} {d.Why}"));
@@ -555,6 +551,7 @@ public sealed class DuplicateTests(DuplicateMedia m)
         var lib = NewLibrary((full, m.Original), (half, m.HalfCopied));
         var a = await Analyse(lib);
         File.SetLastWriteTime(lib.Source(full), DateTime.Now.AddDays(-3));
+        File.SetCreationTime(lib.Source(full), DateTime.Now.AddDays(-3));
         WaitUntilFree(lib.Source(full));
         var fresh = await DuplicateCleaner.PlanAsync(a.Duplicates, m.Tools, CancellationToken.None, lib.In, lib.Out, null, TimeSpan.FromMinutes(30));
         Assert.Equal(2, fresh.Count);
@@ -562,10 +559,11 @@ public sealed class DuplicateTests(DuplicateMedia m)
         Assert.All(fresh, d => Assert.Contains(L.T("eben erst", "just now"), d.Reason));
 
         File.SetLastWriteTime(lib.Source(half), DateTime.Now.AddDays(-3));
+        File.SetCreationTime(lib.Source(half), DateTime.Now.AddDays(-3));
         WaitUntilFree(lib.Source(half));
-        var old = await DuplicateCleaner.PlanAsync(a.Duplicates, m.Tools, CancellationToken.None, lib.In, lib.Out, null, TimeSpan.FromMinutes(30));
-        Assert.True(Of(old, lib.Source(half)).WillDelete);
-        Assert.True(Of(old, lib.Source(full)).IsKept);
+        var old = await Plan(lib, a, TimeSpan.FromMinutes(30));
+        Assert.True(Of(old, lib.Source(half)).WillDelete, Describe(old));
+        Assert.True(Of(old, lib.Source(full)).IsKept, Describe(old));
     }
 
     [Fact]

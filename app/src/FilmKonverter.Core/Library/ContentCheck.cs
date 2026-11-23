@@ -58,7 +58,7 @@ public static class ContentCheck
         try
         {
             r = await ProcessRunner.RunAsync(tools.FfprobePath,
-                ["-v", "error", "-read_intervals", start.ToString("0.###", Fmt.Inv) + "%", "-show_entries", "packet=pts_time", "-of", "csv=p=0", file],
+                ["-v", "error", "-read_intervals", start.ToString("0.###", Fmt.Inv) + "%+#1000000", "-show_entries", "packet=pts_time", "-of", "csv=p=0", file],
                 TimeSpan.FromMinutes(5), ct).ConfigureAwait(false);
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
