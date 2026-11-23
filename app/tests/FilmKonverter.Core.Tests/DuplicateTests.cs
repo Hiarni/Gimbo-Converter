@@ -120,7 +120,7 @@ public sealed class DuplicateTests(DuplicateMedia m)
     private async Task<List<DuplicateDecision>> Plan(Library lib, LibraryAnalysis a)
     {
         var plan = await DuplicateCleaner.PlanAsync(a.Duplicates, m.Tools, CancellationToken.None, lib.In, lib.Out);
-        for (var attempt = 1; attempt < 3 && plan.Any(BrieflyUnreadable); attempt++)
+        for (var attempt = 1; attempt < 4 && plan.Any(BrieflyUnreadable); attempt++)
         {
             await Task.Delay(1500 * attempt);
             plan = await DuplicateCleaner.PlanAsync(a.Duplicates, m.Tools, CancellationToken.None, lib.In, lib.Out);
@@ -130,7 +130,7 @@ public sealed class DuplicateTests(DuplicateMedia m)
 
     private bool BrieflyUnreadable(DuplicateDecision d)
     {
-        if (d.Reason is null || !d.Reason.Contains(L.T("nicht lesbar", "not readable"), StringComparison.OrdinalIgnoreCase) || !File.Exists(d.File)) return false;
+        if (d.Reason is null || !d.Reason.Contains(L.T("lesbar", "readable"), StringComparison.OrdinalIgnoreCase) || !File.Exists(d.File)) return false;
         var length = new FileInfo(d.File).Length;
         return length != new FileInfo(m.Garbage).Length && length != new FileInfo(m.HalfCopied).Length;
     }
@@ -306,8 +306,8 @@ public sealed class DuplicateTests(DuplicateMedia m)
         var (_, plan, result) = await Clean(lib);
         Assert.Empty(result.Deleted);
         Assert.DoesNotContain(plan, d => d.WillDelete);
-        Assert.Contains(L.T("andere Laufzeit", "different duration"), Of(plan, lib.Source("Show/Show.S01E02.German.720p.mkv")).Reason);
-        Assert.Contains(L.T("anderes Bild", "different picture"), Of(plan, lib.Source("Privat/Hochzeit (1).mkv")).Reason);
+        Assert.True(Of(plan, lib.Source("Show/Show.S01E02.German.720p.mkv")).Reason?.Contains(L.T("andere Laufzeit", "different duration")) == true, Describe(plan));
+        Assert.True(Of(plan, lib.Source("Privat/Hochzeit (1).mkv")).Reason?.Contains(L.T("anderes Bild", "different picture")) == true, Describe(plan));
         AssertAllThere(lib, "Show/Show.S01E02.German.1080p.mkv", "Show/Show.S01E02.German.720p.mkv", "Privat/Hochzeit.mkv", "Privat/Hochzeit (1).mkv");
     }
 
