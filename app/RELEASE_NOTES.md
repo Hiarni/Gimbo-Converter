@@ -1,15 +1,15 @@
 ### Deutsch
 
-- Schnellere Updates: Downloads über mehrere Verbindungen, mit Geschwindigkeitsanzeige
-- Seitenleiste auf Wunsch dauerhaft ausgeklappt
-- Frühere Umbenennen-Läufe lassen sich löschen
+- Doppelte Dateien: Intakte Dateien werden nicht mehr zufällig als „Ende nicht lesbar“ gemeldet, die Prüfung ist dadurch zuverlässiger
+- Englische Oberfläche: Datum im Hinweis zum Speicherplatz korrekt dargestellt
+- Updates kommen jetzt direkt vom umbenannten Projekt Gimbo-Converter
 
 ZIP entpacken, `Gimbo Konverter.exe` starten.
 
 ### English
 
-- Faster updates: downloads over several connections, with a speed display
-- Sidebar can stay expanded permanently
-- Earlier rename runs can be deleted
+- Duplicate files: intact files are no longer randomly reported as "end not readable", so the check is more reliable
+- English interface: date in the disk space notice shown correctly
+- Updates now come directly from the renamed project Gimbo-Converter
 
 Unzip and run `Gimbo Konverter.exe`.
