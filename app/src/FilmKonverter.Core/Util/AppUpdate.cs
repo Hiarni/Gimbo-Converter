@@ -14,7 +14,7 @@ public sealed record AppRelease(Version Version, string Source, Uri? ZipUrl = nu
 
 public static partial class AppUpdate
 {
-    public const string Repo = "Hiarni/Gimbo-Konverter";
+    public const string Repo = "Hiarni/Gimbo-Converter";
     public const string ExeName = "Gimbo Konverter.exe";
     public static readonly Uri LatestUrl = new($"https://api.github.com/repos/{Repo}/releases/latest");
 

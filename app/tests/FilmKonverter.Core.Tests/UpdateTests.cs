@@ -182,7 +182,7 @@ public class AppUpdateTests
         const string json = """
             {"tag_name":"v2.2.0","draft":false,"prerelease":false,
              "assets":[{"name":"Gimbo-Konverter-v2.2.0.zip","digest":"sha256:ABCDEF0123456789abcdef0123456789abcdef0123456789abcdef0123456789",
-                        "browser_download_url":"https://github.com/Hiarni/Gimbo-Konverter/releases/download/v2.2.0/Gimbo-Konverter-v2.2.0.zip"}]}
+                        "browser_download_url":"https://github.com/Hiarni/Gimbo-Converter/releases/download/v2.2.0/Gimbo-Konverter-v2.2.0.zip"}]}
             """;
         var r = AppUpdate.ParseGitHub(json)!;
         Assert.Equal("2.2.0", r.VersionText);
