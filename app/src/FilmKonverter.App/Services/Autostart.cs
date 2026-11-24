@@ -5,8 +5,8 @@ namespace FilmKonverter.App.Services;
 public static class Autostart
 {
     private const string RunKey = @"Software\Microsoft\Windows\CurrentVersion\Run";
-    private const string ValueName = "Gimbo Konverter";
-    private const string OldValueName = "GimboKonverter";
+    private const string ValueName = "Gimbo Converter";
+    private static readonly string[] OldValueNames = ["Gimbo Konverter", "GimboKonverter"];
     public const string Argument = "--autostart";
 
     private static string Command => $"\"{Environment.ProcessPath}\" {Argument}";
@@ -29,7 +29,8 @@ public static class Autostart
         try
         {
             using var key = Registry.CurrentUser.CreateSubKey(RunKey, writable: true);
-            if (key.GetValue(OldValueName) is not null) key.DeleteValue(OldValueName);
+            foreach (var old in OldValueNames)
+                if (key.GetValue(old) is not null) key.DeleteValue(old);
             if (enabled) key.SetValue(ValueName, Command);
             else if (key.GetValue(ValueName) is not null) key.DeleteValue(ValueName);
             return null;
@@ -46,7 +47,7 @@ public static class Autostart
         {
             using var key = Registry.CurrentUser.OpenSubKey(RunKey);
             var current = key?.GetValue(ValueName) as string;
-            if (key?.GetValue(OldValueName) is not null) { Set(enabled); return; }
+            if (OldValueNames.Any(old => key?.GetValue(old) is not null)) { Set(enabled); return; }
             if (enabled && current != Command) Set(true);
             if (!enabled && current is not null) Set(false);
         }

@@ -209,7 +209,7 @@ public sealed partial class RunViewModel : ObservableObject, IRunObserver
             StatusText = L.T("Wartet auf die nächste Suche.", "Waiting for the next scan.") + RunTexts.FinishHint(RunKind.Library, false, _tally, counters);
             _app.WriteLog($"=== Durchlauf {pass} beendet: {RunTexts.SummaryLine(RunKind.Library, _tally, counters)}, gewonnen {RunTexts.Gain(_tally.GainBytes)}");
             if (_app.Settings.Notifications && counters.Encoded + counters.Replaced + counters.Errors > 0)
-                Notify?.Invoke(L.T("Gimbo Konverter – Durchlauf beendet", "Gimbo Konverter – pass finished"), RunTexts.Summary(RunKind.Library, _tally, counters), _tally.Errors > 0);
+                Notify?.Invoke(L.T("Gimbo Konverter – Durchlauf beendet", "Gimbo Converter – pass finished"), RunTexts.Summary(RunKind.Library, _tally, counters), _tally.Errors > 0);
         }
         else
         {
@@ -218,7 +218,7 @@ public sealed partial class RunViewModel : ObservableObject, IRunObserver
                              $"Continuous mode: pass {pass} was not possible ({why}). Next attempt at {next:HH:mm}.") + maySleep;
             StatusText = L.T($"{why}. Der Lauf bleibt aktiv und versucht es von selbst wieder.", $"{why}. The run stays active and tries again on its own.");
             _app.WriteLog($"=== Durchlauf {pass} nicht moeglich: {why}. Naechster Versuch {next:HH:mm}");
-            if (firstFailure) Notify?.Invoke(L.T("Gimbo Konverter – wartet", "Gimbo Konverter – waiting"), StatusText, true);
+            if (firstFailure) Notify?.Invoke(L.T("Gimbo Konverter – wartet", "Gimbo Converter – waiting"), StatusText, true);
         }
         UpdateKeepAwake();
         WriteOwnStatus();
@@ -466,13 +466,13 @@ public sealed partial class RunViewModel : ObservableObject, IRunObserver
         }
         var since = RunTexts.SinceStart(_tally);
         _app.WriteLog($"=== Ende ({StatusText}) {RunTexts.SummaryLine(_kind, _tally, c)}, gewonnen {RunTexts.Gain(_tally.GainBytes)}" + (since.Length > 0 ? " | " + since : ""));
-        if (error is not null) Notify?.Invoke(L.T("Gimbo Konverter – Fehler", "Gimbo Konverter – error"), error, true);
-        else if (_lastDiskFull) Notify?.Invoke(L.T("Gimbo Konverter – Speicher voll", "Gimbo Konverter – disk full"), StatusText, true);
+        if (error is not null) Notify?.Invoke(L.T("Gimbo Konverter – Fehler", "Gimbo Converter – error"), error, true);
+        else if (_lastDiskFull) Notify?.Invoke(L.T("Gimbo Konverter – Speicher voll", "Gimbo Converter – disk full"), StatusText, true);
         else if (_app.Settings.Notifications && !stopped)
         {
             var hint = _tally.Done == 0 ? RunTexts.FinishHint(_kind, false, _tally, c, _queueLeft).Trim() : "";
             var text = hint.Length > 0 ? hint : RunTexts.Summary(_kind, _tally, c) + (since.Length > 0 ? "\n" + since : "");
-            Notify?.Invoke(L.T("Gimbo Konverter – fertig", "Gimbo Konverter – done"), text, _tally.Errors > 0);
+            Notify?.Invoke(L.T("Gimbo Konverter – fertig", "Gimbo Converter – done"), text, _tally.Errors > 0);
         }
     }
 
@@ -541,7 +541,7 @@ public sealed partial class RunViewModel : ObservableObject, IRunObserver
         _pendingCts = new CancellationTokenSource();
         var ct = _pendingCts.Token;
         BannerCancelable = true;
-        Notify?.Invoke("Gimbo Konverter", L.T($"Fertig. {what} in 60 Sekunden, im Programm abbrechbar.", $"Done. {what} in 60 seconds, can be cancelled in the program."), false);
+        Notify?.Invoke(App.Title, L.T($"Fertig. {what} in 60 Sekunden, im Programm abbrechbar.", $"Done. {what} in 60 seconds, can be cancelled in the program."), false);
         try
         {
             do

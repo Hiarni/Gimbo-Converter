@@ -234,6 +234,21 @@ public class AppUpdateTests
     }
 
     [Fact]
+    public async Task Alter_Programmname_wird_erkannt_und_behalten()
+    {
+        var share = Dir();
+        var app = Dir();
+        var exe = Path.Combine(app, AppUpdate.OldExeName);
+        File.WriteAllBytes(exe, FakeExe(1));
+        File.WriteAllBytes(Path.Combine(share, "Gimbo-Converter-v2.5.0.zip"), Zip(FakeExe(2)));
+        var newExe = await AppUpdate.PrepareAsync(null, AppUpdate.CheckFolder(share)!, exe);
+        AppUpdate.Swap(exe, newExe);
+        AppUpdate.CleanupOld(exe);
+        Assert.Equal([AppUpdate.OldExeName], Directory.GetFiles(app).Select(Path.GetFileName).ToArray());
+        Assert.Equal(2, File.ReadAllBytes(exe)[5]);
+    }
+
+    [Fact]
     public async Task Download_mit_falscher_Pruefsumme_oder_kaputter_Datei_aendert_nichts()
     {
         var app = Dir();

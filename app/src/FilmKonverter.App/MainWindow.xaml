@@ -5,7 +5,7 @@
     xmlns:l="clr-namespace:FilmKonverter.App"
     xmlns:pages="clr-namespace:FilmKonverter.App.Pages"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-    Title="Gimbo Konverter"
+    Title="{l:T 'Gimbo Konverter', 'Gimbo Converter'}"
     Icon="pack://application:,,,/Assets/GimboKonverter.ico"
     Width="1320"
     Height="860"
@@ -21,7 +21,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <ui:TitleBar Grid.Row="0" Title="Gimbo Konverter">
+        <ui:TitleBar Grid.Row="0" Title="{l:T 'Gimbo Konverter', 'Gimbo Converter'}">
             <ui:TitleBar.Icon>
                 <ui:ImageIcon Source="pack://application:,,,/Assets/icon-32.png" />
             </ui:TitleBar.Icon>

@@ -433,7 +433,7 @@ public sealed partial class ProfilesViewModel : ObservableObject
         var dlg = new SaveFileDialog
         {
             Title = L.T("Profile exportieren", "Export profiles"),
-            FileName = "Gimbo-Konverter-Profile.json",
+            FileName = L.T("Gimbo-Konverter-Profile.json", "Gimbo-Converter-Profiles.json"),
             Filter = L.T("Profile (*.json)|*.json", "Profiles (*.json)|*.json"),
         };
         if (dlg.ShowDialog() != true) return;

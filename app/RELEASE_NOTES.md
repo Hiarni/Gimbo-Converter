@@ -1,13 +1,15 @@
 ### Deutsch
 
-- Neu: Seite „Reparieren“. Macht fertige Dateien wieder direkt abspielbar: ein zu hoher HEVC-Level wird verlustfrei korrigiert, Ton, den Fernseher nicht können (DTS, TrueHD, FLAC …), wird nach AC3 oder E-AC3 umgewandelt
-- Für MKV und MP4, Ordner oder Dateien per Ziehen, Vorschau je Datei, Ersetzen erst nach strenger Prüfung
+- Fenstergröße, Position und Vollbild bleiben beim nächsten Start erhalten
+- Der Programmname folgt der Sprache: „Gimbo Konverter“ auf Deutsch, „Gimbo Converter“ auf Englisch. Die Programmdatei heißt jetzt `Gimbo Converter.exe`
+- Beim Update aus dem Programm behält die Datei ihren bisherigen Namen, Verknüpfungen und Autostart funktionieren weiter
 
-ZIP entpacken, `Gimbo Konverter.exe` starten.
+ZIP entpacken, `Gimbo Converter.exe` starten.
 
 ### English
 
-- New: “Repair” page. Makes finished files play directly again: a too high HEVC level is corrected losslessly, audio that TVs cannot play (DTS, TrueHD, FLAC …) is converted to AC3 or E-AC3
-- For MKV and MP4, folders or files via drag and drop, preview per file, replaced only after a strict check
+- Window size, position and maximized state are kept for the next start
+- The program name follows the language: “Gimbo Konverter” in German, “Gimbo Converter” in English. The program file is now called `Gimbo Converter.exe`
+- When updating from within the program, the file keeps its current name, so shortcuts and autostart keep working
 
-Unzip and run `Gimbo Konverter.exe`.
+Unzip and run `Gimbo Converter.exe`.

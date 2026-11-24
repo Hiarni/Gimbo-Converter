@@ -24,7 +24,7 @@ public sealed class TrayIcon : IDisposable
         _exit = exit;
 
         var menu = new Forms.ContextMenuStrip();
-        var open = new Forms.ToolStripMenuItem(L.T("Gimbo Konverter öffnen", "Open Gimbo Konverter"), null, (_, _) => _show());
+        var open = new Forms.ToolStripMenuItem(L.T("Gimbo Konverter öffnen", "Open Gimbo Converter"), null, (_, _) => _show());
         open.Font = new System.Drawing.Font(open.Font, System.Drawing.FontStyle.Bold);
         _status = new Forms.ToolStripMenuItem(L.T("Bereit", "Ready")) { Enabled = false };
         _start = new Forms.ToolStripMenuItem("Start", null, (_, _) => Exec(_run.StartCommand));
@@ -42,7 +42,7 @@ public sealed class TrayIcon : IDisposable
         _icon = new Forms.NotifyIcon
         {
             Icon = LoadIcon(),
-            Text = "Gimbo Konverter",
+            Text = App.Title,
             ContextMenuStrip = menu,
             Visible = false,
         };
@@ -84,10 +84,10 @@ public sealed class TrayIcon : IDisposable
         if (e.PropertyName is not (nameof(RunViewModel.IsRunning) or nameof(RunViewModel.PercentText)
             or nameof(RunViewModel.CurrentPosition) or nameof(RunViewModel.IsPaused) or nameof(RunViewModel.StatusText))) return;
         string text;
-        if (!_run.IsRunning) text = "Gimbo Konverter – " + _run.StatusText;
+        if (!_run.IsRunning) text = App.Title + " – " + _run.StatusText;
         else
         {
-            text = "Gimbo Konverter – " + (_run.IsPaused ? L.T("pausiert", "paused") : _run.StageName.Length > 0 ? $"{_run.StageName} {_run.PercentText}" : L.T("läuft", "running"));
+            text = App.Title + " – " + (_run.IsPaused ? L.T("pausiert", "paused") : _run.StageName.Length > 0 ? $"{_run.StageName} {_run.PercentText}" : L.T("läuft", "running"));
             if (_run.CurrentPosition.Length > 0) text += "\n" + _run.CurrentPosition;
             if (_run.CurrentName.Length > 0) text += "\n" + Path.GetFileName(_run.CurrentName);
         }

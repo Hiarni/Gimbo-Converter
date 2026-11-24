@@ -20,7 +20,7 @@ HEVC mit der Grafikkarte (NVIDIA, AMD, Intel) oder dem Prozessor · mehrere PCs 
 
 ## Schnellstart
 
-1. ZIP aus [Releases](../../releases/latest) entpacken und `Gimbo Konverter.exe` starten.
+1. ZIP aus [Releases](../../releases/latest) entpacken und `Gimbo Converter.exe` starten.
 2. **Profil** wählen (*NVIDIA*, *AMD*, *Intel* oder *Prozessor*), Quell- und Zielordner eintragen.
 3. Optional unter **Werkzeuge → Testmodus** den passenden Qualitätswert ermitteln.
 4. **Start** drücken. Der Rest läuft von allein, auch über Nacht und im Hintergrund.

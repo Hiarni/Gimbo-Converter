@@ -11,9 +11,9 @@
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
     <AssemblyName>GimboKonverter</AssemblyName>
     <RootNamespace>FilmKonverter.App</RootNamespace>
-    <Version>2.4.0</Version>
-    <Product>Gimbo Konverter</Product>
-    <AssemblyTitle>Gimbo Konverter</AssemblyTitle>
+    <Version>2.4.1</Version>
+    <Product>Gimbo Converter</Product>
+    <AssemblyTitle>Gimbo Converter</AssemblyTitle>
     <Company>Hiarni</Company>
     <Copyright>Copyright © 2026 Hiarni</Copyright>
     <ApplicationIcon>Assets\GimboKonverter.ico</ApplicationIcon>

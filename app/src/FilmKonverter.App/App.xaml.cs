@@ -7,7 +7,7 @@ namespace FilmKonverter.App;
 
 public partial class App : Application
 {
-    public const string Title = "Gimbo Konverter";
+    public static string Title => L.T("Gimbo Konverter", "Gimbo Converter");
 
     public static string? ScreenshotFolder { get; private set; }
 

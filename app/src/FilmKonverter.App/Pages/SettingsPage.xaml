@@ -179,7 +179,7 @@
                         <DockPanel>
                             <Image Width="64" Height="64" Margin="0,0,16,0" DockPanel.Dock="Left" Source="pack://application:,,,/Assets/icon-256.png" />
                             <StackPanel VerticalAlignment="Center">
-                                <TextBlock FontSize="18" FontWeight="SemiBold" Foreground="{DynamicResource TextFillColorPrimaryBrush}" Text="Gimbo Konverter" />
+                                <TextBlock FontSize="18" FontWeight="SemiBold" Foreground="{DynamicResource TextFillColorPrimaryBrush}" Text="{l:T 'Gimbo Konverter', 'Gimbo Converter'}" />
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Style="{StaticResource Muted}" Text="Version " />
                                     <TextBlock Style="{StaticResource Muted}" Text="{Binding AppVersion}" />

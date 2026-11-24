@@ -15,7 +15,8 @@ public sealed record AppRelease(Version Version, string Source, Uri? ZipUrl = nu
 public static partial class AppUpdate
 {
     public const string Repo = "Hiarni/Gimbo-Converter";
-    public const string ExeName = "Gimbo Konverter.exe";
+    public const string ExeName = "Gimbo Converter.exe";
+    public const string OldExeName = "Gimbo Konverter.exe";
     public static readonly Uri LatestUrl = new($"https://api.github.com/repos/{Repo}/releases/latest");
 
     [GeneratedRegex(@"v?(?<v>\d+\.\d+(?:\.\d+)?)", RegexOptions.IgnoreCase)]
@@ -74,8 +75,8 @@ public static partial class AppUpdate
         var found = new List<AppRelease>();
         foreach (var zip in Directory.EnumerateFiles(folder, "Gimbo-Converter*.zip").Concat(Directory.EnumerateFiles(folder, "Gimbo-Konverter*.zip")))
             if (ParseVersion(Path.GetFileNameWithoutExtension(zip)) is { } v) found.Add(new AppRelease(v, folder, LocalFile: zip));
-        var exe = Path.Combine(folder, ExeName);
-        if (File.Exists(exe) && ExeVersion(exe) is { } ev) found.Add(new AppRelease(ev, folder, LocalFile: exe));
+        foreach (var exe in new[] { ExeName, OldExeName }.Select(n => Path.Combine(folder, n)))
+            if (File.Exists(exe) && ExeVersion(exe) is { } ev) found.Add(new AppRelease(ev, folder, LocalFile: exe));
         return found.OrderByDescending(r => r.Version).FirstOrDefault();
     }
 
@@ -136,6 +137,7 @@ public static partial class AppUpdate
             {
                 using var zip = ZipFile.OpenRead(source);
                 var entry = zip.Entries.FirstOrDefault(e => e.Name.Equals(ExeName, StringComparison.OrdinalIgnoreCase))
+                            ?? zip.Entries.FirstOrDefault(e => e.Name.Equals(OldExeName, StringComparison.OrdinalIgnoreCase))
                             ?? zip.Entries.FirstOrDefault(e => e.Name.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
                             ?? throw new InvalidOperationException(L.T("Im Update fehlt das Programm.", "The update does not contain the program."));
                 entry.ExtractToFile(newExe);

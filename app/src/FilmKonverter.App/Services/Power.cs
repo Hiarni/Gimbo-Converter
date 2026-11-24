@@ -34,7 +34,7 @@ internal static partial class Power
     {
         try
         {
-            Process.Start(new ProcessStartInfo("shutdown.exe", L.T("/s /t 15 /c \"Gimbo Konverter: Arbeit erledigt, der PC wird heruntergefahren.\"", "/s /t 15 /c \"Gimbo Konverter: work done, shutting down the PC.\""))
+            Process.Start(new ProcessStartInfo("shutdown.exe", L.T("/s /t 15 /c \"Gimbo Konverter: Arbeit erledigt, der PC wird heruntergefahren.\"", "/s /t 15 /c \"Gimbo Converter: work done, shutting down the PC.\""))
             {
                 CreateNoWindow = true,
                 UseShellExecute = false,

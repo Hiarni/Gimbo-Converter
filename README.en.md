@@ -2,9 +2,9 @@
 
 🇩🇪 <a href="README.md">Deutsch</a> &nbsp;·&nbsp; 🇬🇧 <b>English</b>
 
-<img src="docs/icon.png" width="112" alt="Gimbo Konverter">
+<img src="docs/icon.png" width="112" alt="Gimbo Converter">
 
-# Gimbo Konverter
+# Gimbo Converter
 
 **Shrinks TV and movie libraries considerably, without visible quality loss.**
 
@@ -20,7 +20,7 @@ HEVC on the graphics card (NVIDIA, AMD, Intel) or the CPU · several PCs work to
 
 ## Quick start
 
-1. Unzip the archive from [Releases](../../releases/latest) and run `Gimbo Konverter.exe`.
+1. Unzip the archive from [Releases](../../releases/latest) and run `Gimbo Converter.exe`.
 2. Choose a **profile** (*NVIDIA*, *AMD*, *Intel* or *Prozessor* for the CPU) and enter the source and target folders.
 3. Optionally find the right quality value under **Tools → Test mode**.
 4. Press **Start**. Everything else runs on its own, overnight and in the background too.
@@ -74,10 +74,10 @@ HEVC on the graphics card (NVIDIA, AMD, Intel) or the CPU · several PCs work to
 
 ## License and legal
 
-- **License:** Gimbo Konverter is licensed under the [MIT License](LICENSE). You may use, modify and share it as long as the copyright notice is kept. The software is provided without warranty.
+- **License:** Gimbo Converter is licensed under the [MIT License](LICENSE). You may use, modify and share it as long as the copyright notice is kept. The software is provided without warranty.
 - **FFmpeg:** The download contains unmodified FFmpeg executables under the GPL-3.0. License texts, source code information and all other components are listed in [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
 - **Privacy:** No telemetry, no account. The program only connects to GitHub (update check and downloads) and gyan.dev (ffmpeg updates).
-- **Use:** Gimbo Konverter does not circumvent copy protection. Only use it for media you legally own.
+- **Use:** Gimbo Converter does not circumvent copy protection. Only use it for media you legally own.
 - **Trademarks:** NVIDIA, AMD, Intel, Apple and Windows are trademarks of their respective owners.
 
 ## Building
