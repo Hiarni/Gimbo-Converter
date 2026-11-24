@@ -1,6 +1,6 @@
 <div align="center">
 
-<a href="README.md"><img src="docs/lang/de.svg" height="44" alt="Deutsch"></a>&nbsp;&nbsp;<a href="README.en.md"><img src="docs/lang/en-active.svg" height="44" alt="English"></a>
+<a href="README.md"><img src="docs/lang/de.png" height="44" alt="Deutsch"></a>&nbsp;&nbsp;<a href="README.en.md"><img src="docs/lang/en-active.png" height="44" alt="English"></a>
 
 <img src="docs/icon.png" width="112" alt="Gimbo Konverter">
 
@@ -37,6 +37,7 @@ HEVC on the graphics card (NVIDIA, AMD, Intel) or the CPU · several PCs work to
 | **Statistics** | Space saved per day, PC comparison, codecs, resolutions and a forecast until completion |
 | **Convert** | Single files for devices (*Most compatible*, *Phone*, *Apple*, *AV1*), container change or audio only |
 | **Rename** | Consistent scheme such as `S01E02 - Title.mkv`, companion files move along, with preview and undo |
+| **Repair** | Makes finished files play directly again: correct a too high HEVC level losslessly, convert DTS, TrueHD, FLAC and the like to AC3 or E-AC3, in place and checked |
 | **Tools** | Test mode with picture comparison, touch up finished files, check run for damaged files |
 | **Background** | Starts with Windows, continuous mode, time window, pauses for games and videos in full screen |
 
@@ -59,12 +60,15 @@ HEVC on the graphics card (NVIDIA, AMD, Intel) or the CPU · several PCs work to
 <td><img src="docs/screenshots/en/konvertieren.png" alt="Convert"><br><sub><b>Convert</b></sub></td>
 </tr>
 <tr>
+<td><img src="docs/screenshots/en/reparieren.png" alt="Repair"><br><sub><b>Repair</b></sub></td>
 <td><img src="docs/screenshots/en/umbenennen-serien.png" alt="Rename"><br><sub><b>Rename</b></sub></td>
-<td><img src="docs/screenshots/en/profil-qualitaet.png" alt="Profile"><br><sub><b>Profile</b></sub></td>
 </tr>
 <tr>
+<td><img src="docs/screenshots/en/profil-qualitaet.png" alt="Profile"><br><sub><b>Profile</b></sub></td>
 <td><img src="docs/screenshots/en/werkzeuge.png" alt="Tools"><br><sub><b>Tools</b></sub></td>
-<td><img src="docs/screenshots/en/start-hell.png" alt="Light theme"><br><sub><b>Light theme</b></sub></td>
+</tr>
+<tr>
+<td colspan="2"><img src="docs/screenshots/en/start-hell.png" alt="Light theme"><br><sub><b>Light theme</b></sub></td>
 </tr>
 </table>
 

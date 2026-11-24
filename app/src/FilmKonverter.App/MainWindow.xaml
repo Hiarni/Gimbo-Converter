@@ -66,6 +66,11 @@
                         <ui:SymbolIcon Symbol="ArrowSwap24" />
                     </ui:NavigationViewItem.Icon>
                 </ui:NavigationViewItem>
+                <ui:NavigationViewItem Content="{l:T 'Reparieren', 'Repair'}" TargetPageType="{x:Type pages:RepairPage}">
+                    <ui:NavigationViewItem.Icon>
+                        <ui:SymbolIcon Symbol="Toolbox24" />
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
                 <ui:NavigationViewItem Content="{l:T 'Umbenennen', 'Rename'}" TargetPageType="{x:Type pages:RenamePage}">
                     <ui:NavigationViewItem.Icon>
                         <ui:SymbolIcon Symbol="Rename24" />

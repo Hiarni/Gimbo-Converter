@@ -121,6 +121,9 @@ public sealed class AppSettings
     public bool ConvertKeepStructure { get; set; } = true;
     public string ConvertSuffix { get; set; } = "";
     public int ConvertParallel { get; set; } = 1;
+    public string RepairAllowedAudio { get; set; } = "aac ac3 eac3 mp3 mp2";
+    public AudioTarget RepairTarget { get; set; } = AudioTarget.Ac3;
+    public int RepairBitrate { get; set; } = 640;
 
     public Profile? FindProfile(string name) =>
         Profiles.FirstOrDefault(p => string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase));

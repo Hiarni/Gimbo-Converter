@@ -144,7 +144,7 @@ public static partial class AudioPlanner
 
     public static bool IsTvFriendly(StreamInfo s) => s.CodecName is "aac" or "ac3" or "eac3" or "mp3" or "mp2";
 
-    private static bool CanDecode(StreamInfo s) => s.CodecName.Length > 0 && s.CodecName is not ("none" or "unknown" or "ac4" or "mpegh_3d_audio");
+    public static bool CanDecode(StreamInfo s) => s.CodecName.Length > 0 && s.CodecName is not ("none" or "unknown" or "ac4" or "mpegh_3d_audio");
 
     public static bool ShouldConvert(StreamInfo s, Profile p) =>
         IsLossless(s) ? p.ConvertLosslessAudio : p.ConvertDts && !IsTvFriendly(s) && CanDecode(s);
@@ -163,7 +163,7 @@ public static partial class AudioPlanner
         _ => c + L.T(" Kanäle", " channels"),
     };
 
-    private static string Describe(StreamInfo a)
+    public static string Describe(StreamInfo a)
     {
         var name = a.CodecName switch
         {

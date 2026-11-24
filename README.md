@@ -1,6 +1,6 @@
 <div align="center">
 
-<a href="README.md"><img src="docs/lang/de-active.svg" height="44" alt="Deutsch"></a>&nbsp;&nbsp;<a href="README.en.md"><img src="docs/lang/en.svg" height="44" alt="English"></a>
+<a href="README.md"><img src="docs/lang/de-active.png" height="44" alt="Deutsch"></a>&nbsp;&nbsp;<a href="README.en.md"><img src="docs/lang/en.png" height="44" alt="English"></a>
 
 <img src="docs/icon.png" width="112" alt="Gimbo Konverter">
 
@@ -37,6 +37,7 @@ HEVC mit der Grafikkarte (NVIDIA, AMD, Intel) oder dem Prozessor · mehrere PCs 
 | **Statistik** | Platzgewinn pro Tag, PC-Vergleich, Codecs, Auflösungen und Prognose bis zum Abschluss |
 | **Konvertieren** | Einzelne Dateien für Geräte (*Maximal kompatibel*, *Handy*, *Apple*, *AV1*), Containerwechsel oder nur Ton |
 | **Umbenennen** | Einheitliches Schema wie `S01E02 - Titel.mkv`, Begleitdateien wandern mit, mit Vorschau und Rückgängig |
+| **Reparieren** | Macht fertige Dateien wieder direkt abspielbar: zu hohen HEVC-Level verlustfrei korrigieren, DTS, TrueHD, FLAC und Co. nach AC3 oder E-AC3 umwandeln, am Ort und geprüft |
 | **Werkzeuge** | Testmodus mit Bildvergleich, fertige Dateien nachbessern, Prüflauf auf beschädigte Dateien |
 | **Hintergrund** | Start mit Windows, Dauerbetrieb, Zeitfenster, Pause bei Spielen und Filmen im Vollbild |
 
@@ -59,12 +60,15 @@ HEVC mit der Grafikkarte (NVIDIA, AMD, Intel) oder dem Prozessor · mehrere PCs 
 <td><img src="docs/screenshots/konvertieren.png" alt="Konvertieren"><br><sub><b>Konvertieren</b></sub></td>
 </tr>
 <tr>
+<td><img src="docs/screenshots/reparieren.png" alt="Reparieren"><br><sub><b>Reparieren</b></sub></td>
 <td><img src="docs/screenshots/umbenennen-serien.png" alt="Umbenennen"><br><sub><b>Umbenennen</b></sub></td>
-<td><img src="docs/screenshots/profil-qualitaet.png" alt="Profil"><br><sub><b>Profil</b></sub></td>
 </tr>
 <tr>
+<td><img src="docs/screenshots/profil-qualitaet.png" alt="Profil"><br><sub><b>Profil</b></sub></td>
 <td><img src="docs/screenshots/werkzeuge.png" alt="Werkzeuge"><br><sub><b>Werkzeuge</b></sub></td>
-<td><img src="docs/screenshots/start-hell.png" alt="Helles Design"><br><sub><b>Helles Design</b></sub></td>
+</tr>
+<tr>
+<td colspan="2"><img src="docs/screenshots/start-hell.png" alt="Helles Design"><br><sub><b>Helles Design</b></sub></td>
 </tr>
 </table>
 

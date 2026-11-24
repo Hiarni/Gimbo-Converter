@@ -57,6 +57,7 @@ public partial class App : Application
             try { AppState.Instance.Save(); } catch { }
             if (AppState.Instance.Run.IsRunning) AppState.Instance.Run.CancelAndWait(TimeSpan.FromSeconds(6));
             if (AppState.Instance.Convert.IsRunning) AppState.Instance.Convert.CancelAndWait(TimeSpan.FromSeconds(4));
+            if (AppState.Instance.Repair.IsRunning) AppState.Instance.Repair.CancelAndWait(TimeSpan.FromSeconds(4));
         };
         AppDomain.CurrentDomain.UnhandledException += (_, args) =>
             AppState.Instance.WriteLog("ABSTURZ " + args.ExceptionObject);
@@ -95,6 +96,10 @@ public partial class App : Application
                 if (app.Settings.Notifications || warn) Tray?.Notify(title, text, warn);
             };
             app.Convert.Notify += (title, text, warn) =>
+            {
+                if (app.Settings.Notifications || warn) Tray?.Notify(title, text, warn);
+            };
+            app.Repair.Notify += (title, text, warn) =>
             {
                 if (app.Settings.Notifications || warn) Tray?.Notify(title, text, warn);
             };

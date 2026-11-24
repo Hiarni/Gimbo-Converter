@@ -522,6 +522,7 @@ public sealed partial class RunViewModel : ObservableObject, IRunObserver
 
     private string? OtherWork() =>
         _app.Convert.IsRunning ? L.T("das Konvertieren", "the conversion")
+        : _app.Repair.IsRunning ? L.T("das Reparieren", "the repair")
         : _app.Rename.IsExecuting ? L.T("das Umbenennen", "the renaming")
         : _app.Library.IsBusy ? L.T("die Arbeit auf der Seite „Bibliothek“", "the work on the “Library” page")
         : null;
@@ -681,7 +682,7 @@ public sealed partial class RunViewModel : ObservableObject, IRunObserver
         var s = _app.Settings;
         var conv = _app.Convert;
         var enabled = s.PauseWhenFullscreen || s.PauseWhenUserActive;
-        var reason = enabled && (IsRunning || conv.IsRunning)
+        var reason = enabled && (IsRunning || conv.IsRunning || _app.Repair.IsRunning)
             ? UserPresence.BusyReason(s.PauseWhenFullscreen, s.PauseWhenUserActive, s.UserIdleMinutes, s.FullscreenIgnore)
             : null;
         var now = DateTime.Now;
@@ -707,6 +708,7 @@ public sealed partial class RunViewModel : ObservableObject, IRunObserver
                 break;
         }
         conv.AutoPauseTick(enabled, reason, now);
+        _app.Repair.AutoPauseTick(enabled, reason, now);
     }
 
     private bool _awake;
@@ -716,7 +718,7 @@ public sealed partial class RunViewModel : ObservableObject, IRunObserver
         if (App.ScreenshotFolder is not null) return;
         var windowClosed = _passWindow is { } w && !w.IsOpen(DateTime.Now);
         var want = _app.Settings.PreventSleep
-                   && (RunPolicy.NeedsAwake(IsRunning, Slots.Any(x => x.Busy), windowClosed, _waitingIdle) || _app.Convert.IsRunning);
+                   && (RunPolicy.NeedsAwake(IsRunning, Slots.Any(x => x.Busy), windowClosed, _waitingIdle) || _app.Convert.IsRunning || _app.Repair.IsRunning);
         if (want == _awake) return;
         _awake = want;
         Power.KeepAwake(want);

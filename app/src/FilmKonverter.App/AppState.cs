@@ -22,6 +22,7 @@ public sealed class AppState
     public LibraryViewModel Library { get; }
     public StatsViewModel Statistics { get; }
     public ConvertViewModel Convert { get; }
+    public RepairViewModel Repair { get; }
 
     public Dictionary<string, Core.Library.AnalysisSnapshot> Snapshots { get; private set; } = new(StringComparer.OrdinalIgnoreCase);
 
@@ -69,6 +70,7 @@ public sealed class AppState
         Library = new LibraryViewModel(this);
         Statistics = new StatsViewModel(this);
         Convert = new ConvertViewModel(this);
+        Repair = new RepairViewModel(this);
     }
 
     private Task? _cacheLoad;

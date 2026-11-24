@@ -152,6 +152,7 @@ public partial class MainWindow
 
         var run = app.Run;
         var converting = app.Convert.IsRunning;
+        var repairing = app.Repair.IsRunning;
         if (app.Rename.IsExecuting)
         {
             if (!IsVisible) ShowFromTray();
@@ -159,7 +160,7 @@ public partial class MainWindow
             e.Cancel = true;
             return;
         }
-        if ((run.IsRunning || converting) && s.ConfirmExit)
+        if ((run.IsRunning || converting || repairing) && s.ConfirmExit)
         {
             if (!IsVisible) ShowFromTray();
             var answer = MessageBox.Show(
@@ -173,6 +174,7 @@ public partial class MainWindow
         }
         if (run.IsRunning) run.CancelAndWait(TimeSpan.FromSeconds(10));
         if (converting) app.Convert.CancelAndWait(TimeSpan.FromSeconds(10));
+        if (repairing) app.Repair.CancelAndWait(TimeSpan.FromSeconds(10));
         app.Save();
     }
 
@@ -213,6 +215,7 @@ public partial class MainWindow
         AppState.Instance.Library.FillDemo();
         AppState.Instance.Statistics.FillDemo();
         AppState.Instance.Convert.FillDemo();
+        AppState.Instance.Repair.FillDemo();
 
         var pages = new (Type Page, string Name)[]
         {
@@ -222,6 +225,7 @@ public partial class MainWindow
             (typeof(StatsPage), "3-statistik"),
             (typeof(ToolsPage), "3-werkzeuge"),
             (typeof(ConvertPage), "3-konvertieren"),
+            (typeof(RepairPage), "3-reparieren"),
             (typeof(RenamePage), "4-umbenennen"),
             (typeof(FfmpegPage), "4-ffmpeg"),
             (typeof(SettingsPage), "5-einstellungen"),
@@ -290,6 +294,7 @@ public partial class MainWindow
             (typeof(RenamePage), "09-umbenennen-serien", -1, 860, true),
             (typeof(ToolsPage), "11-werkzeuge", -1, 900, false),
             (typeof(ConvertPage), "16-konvertieren", -1, 900, true),
+            (typeof(RepairPage), "17-reparieren", -1, 760, false),
             (typeof(SettingsPage), "12-einstellungen-arbeitsweise", 1, 900, false),
             (typeof(FfmpegPage), "13-ffmpeg", -1, 760, false),
         };

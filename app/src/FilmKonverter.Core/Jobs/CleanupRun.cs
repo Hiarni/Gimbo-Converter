@@ -384,7 +384,7 @@ public sealed class CleanupRun(Profile profile, FfmpegTools tools, IRunObserver 
                 Directory.CreateDirectory(coverDir);
                 foreach (var pic in pictures)
                 {
-                    var cover = await ExtractCoverAsync(file, pic, Path.Combine(coverDir, covers.Count.ToString(Fmt.Inv) + ".bin"), ct);
+                    var cover = await ExtractCoverAsync(tools, file, pic, Path.Combine(coverDir, covers.Count.ToString(Fmt.Inv) + ".bin"), ct);
                     if (cover is null)
                         return Plain(new FileEnd(Outcome.Skipped, L.T("Nicht verändert: das Titelbild ließ sich nicht in die neue Datei übernehmen.", "Not changed: the cover picture could not be carried over into the new file.")));
                     covers.Add(cover);
@@ -503,7 +503,7 @@ public sealed class CleanupRun(Profile profile, FfmpegTools tools, IRunObserver 
         catch { return (-2, default); }
     }
 
-    private async Task<CoverFile?> ExtractCoverAsync(string file, StreamInfo pic, string target, CancellationToken ct)
+    internal static async Task<CoverFile?> ExtractCoverAsync(FfmpegTools tools, string file, StreamInfo pic, string target, CancellationToken ct)
     {
         var r = await ProcessRunner.RunAsync(tools.FfmpegPath,
             ["-hide_banner", "-v", "error", "-nostdin", "-y", "-i", file, "-map", "0:" + pic.Index.ToString(Fmt.Inv), "-c", "copy", "-f", "data", target],
