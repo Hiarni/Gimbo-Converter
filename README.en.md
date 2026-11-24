@@ -2,6 +2,8 @@
 
 <a href="README.md"><img src="https://cdn.jsdelivr.net/gh/Hiarni/Gimbo-Converter@main/docs/readme/de.png" height="44" alt="Deutsch"></a>&nbsp;&nbsp;<a href="README.en.md"><img src="https://cdn.jsdelivr.net/gh/Hiarni/Gimbo-Converter@main/docs/readme/en-active.png" height="44" alt="English"></a>
 
+<sub>🇩🇪 <a href="README.md">Deutsch</a> &nbsp;·&nbsp; 🇬🇧 <b>English</b></sub>
+
 <img src="docs/icon.png" width="112" alt="Gimbo Konverter">
 
 # Gimbo Konverter
