@@ -1,6 +1,6 @@
 <div align="center">
 
-<sub>🇩🇪 <a href="README.md">Deutsch</a> &nbsp;·&nbsp; 🇬🇧 <b>English</b></sub>
+🇩🇪 <a href="README.md">Deutsch</a> &nbsp;·&nbsp; 🇬🇧 <b>English</b>
 
 <img src="docs/icon.png" width="112" alt="Gimbo Konverter">
 
