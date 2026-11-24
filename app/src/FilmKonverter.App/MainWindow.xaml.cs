@@ -1,12 +1,16 @@
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shell;
 using FilmKonverter.App.Pages;
+using FilmKonverter.App.Services;
 using FilmKonverter.App.ViewModels;
+using FilmKonverter.Core.Settings;
 using FilmKonverter.Core.Util;
+using Forms = System.Windows.Forms;
 
 namespace FilmKonverter.App;
 
@@ -28,12 +32,20 @@ public partial class MainWindow
             MinHeight = Math.Min(MinHeight, wa.Height);
             Width = Math.Min(Width, wa.Width);
             Height = Math.Min(Height, wa.Height);
+            if (AppState.Instance.Settings.Window is { } place && IsOnScreen(place))
+            {
+                _savedPlace = place;
+                WindowStartupLocation = WindowStartupLocation.Manual;
+            }
         }
         TaskbarItemInfo = new TaskbarItemInfo();
         Loaded += OnLoaded;
         Closing += OnClosing;
         Closed += (_, _) => ClosedForReal = true;
         StateChanged += OnStateChanged;
+        StateChanged += (_, _) => RememberPlace();
+        LocationChanged += (_, _) => RememberPlace();
+        SizeChanged += (_, _) => RememberPlace();
         AppState.Instance.ToolsPage.NavigateToDashboard += () => RootNavigation.Navigate(typeof(DashboardPage));
         AppState.Instance.Library.NavigateToDashboard += () => RootNavigation.Navigate(typeof(DashboardPage));
         AppState.Instance.Run.PropertyChanged += OnRunChanged;
@@ -90,6 +102,36 @@ public partial class MainWindow
         }
     }
 
+    // ---------------- Fensterposition ----------------
+
+    private WindowPlace? _savedPlace;
+    private bool _placeReady;
+
+    private static bool IsOnScreen(WindowPlace place)
+    {
+        var title = new System.Drawing.Rectangle(place.Left, place.Top, place.Right - place.Left, 40);
+        return Forms.Screen.AllScreens.Any(s =>
+        {
+            var hit = System.Drawing.Rectangle.Intersect(s.WorkingArea, title);
+            return hit.Width >= 150 && hit.Height >= 20;
+        });
+    }
+
+    private void RestorePlace()
+    {
+        if (App.ScreenshotFolder is not null) return;
+        if (_savedPlace is { } place && WindowPlacement.Apply(new WindowInteropHelper(this).Handle, place) && place.Maximized)
+            WindowState = WindowState.Maximized;
+        _placeReady = true;
+    }
+
+    private void RememberPlace()
+    {
+        if (!_placeReady || App.ScreenshotFolder is not null) return;
+        if (WindowPlacement.Read(new WindowInteropHelper(this).Handle) is { } place)
+            AppState.Instance.Settings.Window = place;
+    }
+
     // ---------------- Tray ----------------
 
     private bool TrayAvailable => CurrentApp?.Tray?.Visible == true;
@@ -140,6 +182,7 @@ public partial class MainWindow
         if (CurrentApp?.ExitRequested != true && s.CloseToTray && TrayAvailable)
         {
             e.Cancel = true;
+            RememberPlace();
             Hide();
             if (!s.TrayHintShown)
             {
@@ -175,6 +218,7 @@ public partial class MainWindow
         if (run.IsRunning) run.CancelAndWait(TimeSpan.FromSeconds(10));
         if (converting) app.Convert.CancelAndWait(TimeSpan.FromSeconds(10));
         if (repairing) app.Repair.CancelAndWait(TimeSpan.FromSeconds(10));
+        RememberPlace();
         app.Save();
     }
 
@@ -389,6 +433,7 @@ public partial class MainWindow
     protected override void OnSourceInitialized(EventArgs e)
     {
         base.OnSourceInitialized(e);
+        RestorePlace();
         if (App.ScreenshotFolder is not null && PresentationSource.FromVisual(this) is System.Windows.Interop.HwndSource src)
             src.AddHook(AllowHugeWindow);
     }

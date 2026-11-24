@@ -51,6 +51,8 @@ public sealed class AppSettings
 
     public bool SidebarExpanded { get; set; }
 
+    public WindowPlace? Window { get; set; }
+
     public Util.UiLanguage Language { get; set; } = Util.UiLanguage.Auto;
 
     // ---------------- Start und Hintergrund ----------------
@@ -203,6 +205,12 @@ public sealed class AppSettings
             if (SelectedProfile.Equals(old, StringComparison.OrdinalIgnoreCase)) SelectedProfile = neu;
         }
     }
+}
+
+public sealed record WindowPlace(int Left, int Top, int Right, int Bottom, bool Maximized)
+{
+    [System.Text.Json.Serialization.JsonIgnore]
+    public bool IsUsable => Right - Left >= 200 && Bottom - Top >= 150;
 }
 
 public sealed class TotalStats
