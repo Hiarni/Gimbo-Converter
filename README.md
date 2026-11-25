@@ -10,7 +10,7 @@
 
 HEVC mit der Grafikkarte (NVIDIA, AMD, Intel) oder dem Prozessor · mehrere PCs arbeiten gemeinsam an einer Bibliothek
 
-[Download](../../releases/latest) · [Schnellstart](#schnellstart) · [Funktionen](#funktionen)
+[Download](../../releases/latest) · [Schnellstart](#schnellstart) · [Funktionen](#funktionen) · [Änderungen](CHANGELOG.md)
 
 <sub>Windows 10/11 · keine Installation · ffmpeg eingebaut · Deutsch und Englisch</sub>
 

@@ -124,7 +124,32 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           VERSION: ${{ inputs.version != '' && inputs.version || github.ref_name }}
         run: |
-          $notes = "ZIP entpacken, ``Gimbo Converter.exe`` starten.`n`nUnzip and run ``Gimbo Converter.exe``."
-          if (Test-Path 'app/RELEASE_NOTES.md') { $notes = (Get-Content 'app/RELEASE_NOTES.md' -Raw -Encoding utf8).Trim() }
+          # Notizen aus CHANGELOG.md (Deutsch) und CHANGELOG.en.md (Englisch), Abschnitt "## X.Y.Z"
+          $ver = $env:VERSION -replace '^v', ''
+          function Get-Section($file) {
+            $on = $false
+            foreach ($line in Get-Content $file -Encoding utf8) {
+              if ($line -match '^## ') { $on = ($line.Trim() -eq "## $ver"); continue }
+              if ($on -and $line -match '^- ') { $line }
+            }
+          }
+          $de = @(Get-Section 'CHANGELOG.md')
+          $en = @(Get-Section 'CHANGELOG.en.md')
+          if ($de.Count -eq 0 -or $de.Count -ne $en.Count) {
+            Write-Output "::error::$ver fehlt in CHANGELOG.md/CHANGELOG.en.md oder die Punkte passen nicht zusammen."
+            exit 1
+          }
+          $url = "$env:GITHUB_SERVER_URL/$env:GITHUB_REPOSITORY/blob/main"
+          $notes = @(
+            '### 🇩🇪 Deutsch', ''
+            $de
+            '', 'ZIP entpacken, `Gimbo Converter.exe` starten.', ''
+            '### 🇬🇧 English', ''
+            $en
+            '', 'Unzip and run `Gimbo Converter.exe`.', ''
+            '---', ''
+            "🇩🇪 [Einrichtung]($url/README.md) · [Alle Änderungen]($url/CHANGELOG.md) &nbsp;·&nbsp; 🇬🇧 [Setup]($url/README.en.md) · [Changelog]($url/CHANGELOG.en.md)"
+          ) -join "`n"
+          [IO.File]::WriteAllText((Join-Path $PWD 'notes.md'), $notes, [Text.UTF8Encoding]::new($false))
           Copy-Item 'Gimbo-Converter.zip' "Gimbo-Converter-$env:VERSION.zip"
-          gh release create "$env:VERSION" "Gimbo-Converter-$env:VERSION.zip" --target "${{ github.sha }}" --title "Gimbo Converter $env:VERSION" --notes $notes
+          gh release create "$env:VERSION" "Gimbo-Converter-$env:VERSION.zip" --target "${{ github.sha }}" --title "Gimbo Converter $env:VERSION" --notes-file notes.md

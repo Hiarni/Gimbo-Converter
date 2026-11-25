@@ -10,7 +10,7 @@
 
 HEVC on the graphics card (NVIDIA, AMD, Intel) or the CPU · several PCs work together on one library
 
-[Download](../../releases/latest) · [Quick start](#quick-start) · [Features](#features)
+[Download](../../releases/latest) · [Quick start](#quick-start) · [Features](#features) · [Changelog](CHANGELOG.en.md)
 
 <sub>Windows 10/11 · no installation · ffmpeg built in · German and English</sub>
 
