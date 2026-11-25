@@ -12,6 +12,10 @@
 
 </div>
 
+## 2.4.2
+
+- Neues Programm-Icon im Stil der Gimbo-Apps: weißes G, darunter eine Filmstreifen-Kachel
+
 ## 2.4.1
 
 - Fenstergröße, Position und Vollbild bleiben beim nächsten Start erhalten

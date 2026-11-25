@@ -11,7 +11,7 @@
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
     <AssemblyName>GimboKonverter</AssemblyName>
     <RootNamespace>FilmKonverter.App</RootNamespace>
-    <Version>2.4.1</Version>
+    <Version>2.4.2</Version>
     <Product>Gimbo Converter</Product>
     <AssemblyTitle>Gimbo Converter</AssemblyTitle>
     <Company>Hiarni</Company>

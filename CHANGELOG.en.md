@@ -12,6 +12,10 @@
 
 </div>
 
+## 2.4.2
+
+- New program icon in the style of the Gimbo apps: a white G above a film strip tile
+
 ## 2.4.1
 
 - Window size, position and maximized state are kept for the next start
